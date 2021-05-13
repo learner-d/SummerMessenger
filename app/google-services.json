@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "730801490930",
+    "project_id": "summer-msg",
+    "storage_bucket": "summer-msg.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:730801490930:android:51c68ff87a1f1b540eb96b",
+        "android_client_info": {
+          "package_name": "com.summermessenger"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "730801490930-66hb648ac7o91apgmf44c6vv55llh035.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCuRO-1XOsevJCT4rHBtXP3C-zzf1zEyOw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "730801490930-66hb648ac7o91apgmf44c6vv55llh035.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
