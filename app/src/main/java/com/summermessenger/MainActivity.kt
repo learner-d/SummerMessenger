@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import androidx.constraintlayout.widget.Group
 import java.text.SimpleDateFormat
 import java.time.Clock
 import java.util.*
@@ -28,6 +29,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
 
         _messageStack = findViewById(R.id.msg_trash)
         _multiText = findViewById(R.id.message_send)

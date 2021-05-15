@@ -4,54 +4,103 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingStart="30dp"
+    android:paddingEnd="30dp"
     tools:context=".MainActivity">
 
 
-    <Button
+    <ImageButton
         android:id="@+id/smile_button"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:background='@drawable/emoji_img'
         android:layout_toEndOf="@+id/message_send"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/send_button"
+        android:layout_marginRight="10dp"
         />
 
-    <Button
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:id="@+id/account_image"
+        android:background="@drawable/account_img"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/nickname_id"
+        android:text="@string/nicknames"
+        app:layout_constraintStart_toEndOf="@id/account_image"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/online_status"
+        android:text="@string/online_status"
+        app:layout_constraintTop_toBottomOf="@id/nickname_id"
+        app:layout_constraintStart_toEndOf="@id/account_image"
+        />
+
+
+    <ImageButton
         android:id="@+id/send_button"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:background='@drawable/send_img'
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+    <ImageButton
+        android:id="@+id/file_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background='@drawable/file_img'
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        />
 
 
     <TextView
         android:id="@+id/msg_trash"
-        android:layout_width="wrap_content"
+
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/message_send"
-        android:text="Пиздеж тут блять!!!!"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+
         android:gravity="left"
-        />
+        android:text="@string/start_messaging_hint"
+
+        android:textAlignment="center"
+
+        app:layout_constraintBottom_toTopOf="@id/message_send"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="RtlCompat" />
 
 
     <EditText
         android:id="@+id/message_send"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:paddingEnd="0dp"
-        android:hint="Пиздеть тут!"
+
+        android:layout_marginRight="5dp"
         android:ems="10"
         android:gravity="start|top"
+        android:hint="@string/message_hint"
         android:inputType="textMultiLine"
-        app:layout_constraintStart_toStartOf="parent"
+        android:textSize="10sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/smile_button"
-        />
+
+        app:layout_constraintEnd_toStartOf="@id/smile_button"
+        app:layout_constraintStart_toEndOf="@id/file_button" />
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
