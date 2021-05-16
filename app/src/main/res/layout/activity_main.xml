@@ -24,13 +24,14 @@
 
     <ImageView
 
+        android:id="@+id/back_button_menu"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:id="@+id/back_button_menu"
+        android:layout_marginTop="15dp"
         android:background="@drawable/back_button_img"
+        android:onClick="backButtonClicked"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="15dp"
         tools:ignore="MissingConstraints" />
 
 

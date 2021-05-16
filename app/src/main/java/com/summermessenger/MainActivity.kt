@@ -1,8 +1,10 @@
 package com.summermessenger
 
+import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -22,9 +24,16 @@ class MainActivity : AppCompatActivity() {
             Message(_users.find { user -> user.id == "nillado" }!!, "оаоаоаоа", "19:44"),
             Message(_users.find { user -> user.id == "real_doer" }!!, "Опа, опа! Бім, бом!", "19:45")
     );
+
+
+
     private lateinit var _messageStack: TextView
     private lateinit var _multiText: EditText
     private lateinit var _sendBtn: Button
+    private lateinit var _backBtn: Button
+
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,6 +43,13 @@ class MainActivity : AppCompatActivity() {
         _messageStack = findViewById(R.id.msg_trash)
         _multiText = findViewById(R.id.message_send)
         _sendBtn = findViewById(R.id.send_button)
+        _backBtn = findViewById(R.id.back_button_menu)
+
+        _backBtn.setOnClickListener { v ->
+            menuActivity()
+        }
+        menuActivity();
+
         _sendBtn.setOnClickListener { v ->
             val sender = _users.random()
             val msgText = _multiText.text.toString()
@@ -43,6 +59,8 @@ class MainActivity : AppCompatActivity() {
             readMessages()
         }
         readMessages();
+
+
     }
 
     fun readMessages() {
@@ -51,4 +69,11 @@ class MainActivity : AppCompatActivity() {
             _messageStack.append("${message.timeStamp}: ${message.sender.displayName} -> ${message.text}\n");
         }
     }
+
+
+    fun menuActivity(){
+        val backButtonIntent = Intent(this, MenuActivity ::class.java)
+        startActivity(backButtonIntent)
+    }
+
 }
