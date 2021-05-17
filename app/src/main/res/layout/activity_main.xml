@@ -9,8 +9,6 @@
     android:paddingTop="15dp"
     tools:context=".MainActivity">
 
-
-
     <ImageView
 
         android:layout_width="60dp"
@@ -19,23 +17,20 @@
         android:background="@drawable/account_img"
         android:layout_marginLeft="20dp"
         app:layout_constraintStart_toEndOf="@id/back_button_menu"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints" />
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
+    <ImageButton
 
         android:id="@+id/back_button_menu"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_marginTop="15dp"
         android:background="@drawable/back_button_img"
-        android:onClick="backButtonClicked"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 
-    <ImageView
+    <ImageButton
 
         android:layout_width="30dp"
         android:layout_height="30dp"
@@ -43,7 +38,6 @@
         android:background="@drawable/more_vert_img"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-
         android:layout_marginTop="15dp"/>
 
 
@@ -173,15 +167,7 @@
 
 
 
-    <androidx.constraintlayout.widget.Barrier
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:barrierDirection="left" />
 
-    <androidx.constraintlayout.widget.Barrier
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:barrierDirection="right" />
 
     <androidx.constraintlayout.widget.Barrier
         android:layout_width="wrap_content"
@@ -192,7 +178,7 @@
     <androidx.constraintlayout.widget.Barrier
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="online_status, account_image, back_button_menu, nickname_id"
+        app:constraint_referenced_ids="online_status, account_image, back_button_menu, nickname_id, main_toolbar"
         app:barrierDirection="bottom" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

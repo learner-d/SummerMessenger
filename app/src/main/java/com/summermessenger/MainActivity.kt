@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.constraintlayout.widget.Group
 import java.text.SimpleDateFormat
@@ -14,6 +15,7 @@ import java.time.Clock
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
+
     private val _users = arrayOf(
             User("real_doer", "Dmytro"),
             User("nillado", "Albert")
@@ -29,8 +31,8 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var _messageStack: TextView
     private lateinit var _multiText: EditText
-    private lateinit var _sendBtn: Button
-    private lateinit var _backBtn: Button
+    private lateinit var _sendBtn: ImageButton
+    private lateinit var _backBtn: ImageButton
 
 
 
@@ -48,7 +50,7 @@ class MainActivity : AppCompatActivity() {
         _backBtn.setOnClickListener { v ->
             menuActivity()
         }
-        menuActivity();
+
 
         _sendBtn.setOnClickListener { v ->
             val sender = _users.random()
