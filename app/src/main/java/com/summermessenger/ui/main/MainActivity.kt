@@ -17,7 +17,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         if (MainRepository.loginRepository.isLoggedIn)
-            goToChats()
+            goToMenu()
         else
             goToLogin()
 
@@ -34,12 +34,18 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
+    private fun goToMenu(){
+        val intent = Intent(this, MenuActivity::class.java)
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_TASK_ON_HOME)
+        startActivity(intent)
+    }
+
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == LOGIN_REQUEST_CODE){
             if (resultCode == Activity.RESULT_OK) {
-                goToChats()
+                goToMenu()
                 finish()
             }
             else

@@ -16,5 +16,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
+    <Button
+        android:layout_width="match_parent"
+        android:id="@+id/chat_button"
+        android:layout_height="50dp"
+        android:text="idi nahuy button"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/main_toolbar"/>
+
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

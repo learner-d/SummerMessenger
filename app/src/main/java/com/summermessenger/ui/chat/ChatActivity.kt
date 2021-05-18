@@ -10,6 +10,7 @@ import android.widget.ImageButton
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.summermessenger.ui.login.LoginActivity
 import androidx.recyclerview.widget.RecyclerView
+import com.summermessenger.MenuActivity
 import com.summermessenger.R
 import com.summermessenger.data.LoginDataSource.Companion.MockUsers
 import com.summermessenger.data.MainRepository
@@ -32,6 +33,7 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var _messagesRV: RecyclerView
     private lateinit var _multiText: EditText
     private lateinit var _sendBtn: ImageButton
+    private lateinit var _backBtn: ImageButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,6 +49,7 @@ class ChatActivity : AppCompatActivity() {
 
         _multiText = findViewById(R.id.message_send)
         _sendBtn = findViewById(R.id.send_button)
+        _backBtn = findViewById(R.id.back_button_menu)
         _sendBtn.setOnClickListener { v ->
             hideKeyboard()
 
@@ -60,9 +63,21 @@ class ChatActivity : AppCompatActivity() {
             _multiText.text.clear()
         }
 
+        _backBtn.setOnClickListener { v ->
+            onBackPressed()
+        }
+
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        hideKeyboard()
+        finish()
     }
 
     private fun hideKeyboard(){
+
         _inputMethodManager.hideSoftInputFromWindow(_multiText.getWindowToken(), 0)
+
     }
 }

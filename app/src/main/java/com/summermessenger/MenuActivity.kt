@@ -1,10 +1,12 @@
 package com.summermessenger
 
 import android.app.Activity
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.viewbinding.ViewBinding
 import android.renderscript.ScriptGroup
+import android.widget.Button
 import androidx.appcompat.widget.Toolbar
 import com.mikepenz.materialdrawer.AccountHeader
 import com.mikepenz.materialdrawer.AccountHeaderBuilder
@@ -13,6 +15,7 @@ import com.mikepenz.materialdrawer.DrawerBuilder
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem
 import com.summermessenger.databinding.ActivityMenuBinding
+import com.summermessenger.ui.chat.ChatActivity
 
 
 class MenuActivity : AppCompatActivity() {
@@ -21,13 +24,35 @@ class MenuActivity : AppCompatActivity() {
     private lateinit var mDrawer: Drawer
     private lateinit var mHeader: AccountHeader
     private lateinit var mToolbar: Toolbar
+    private lateinit var _chat_button: Button
+
+
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mBinding = ActivityMenuBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
+        _chat_button = findViewById(R.id.chat_button)
+
+
+
+        _chat_button.setOnClickListener { v ->
+            intent = Intent(this, ChatActivity ::class.java )
+            startActivity(intent)
+
+        }
+
+
+
+
+
+
+
     }
+
+
 
     override fun onStart(){
         super.onStart()
