@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="20dp"
+    tools:context=".ui.chat.ChatActivity">
+
+    <ImageView
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:id="@+id/account_image"
+        android:background="@drawable/account_img"
+        android:layout_marginLeft="20dp"
+        app:layout_constraintStart_toEndOf="@id/back_button_menu"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+
+        android:id="@+id/back_button_menu"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/back_button_img"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <ImageButton
+
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:id="@+id/more_vert_button"
+        android:background="@drawable/more_vert_img"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="15dp"/>
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/nickname_id"
+        android:text="@string/nicknames"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="5dp"
+
+        android:textSize="15sp"
+        app:layout_constraintStart_toEndOf="@id/account_image"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/online_status"
+        android:text="@string/online_status"
+
+        android:textSize="15sp"
+
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="5dp"
+        app:layout_constraintTop_toBottomOf="@id/nickname_id"
+        app:layout_constraintStart_toEndOf="@id/account_image"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/message_list"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/account_image"
+        app:layout_constraintBottom_toTopOf="@id/message_send"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:listitem="@layout/chat_message_fragment" />
+
+
+
+
+
+    <ImageButton
+        android:id="@+id/smile_button"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:background='@drawable/emoji_img'
+        android:layout_toEndOf="@+id/message_send"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/send_button"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="5dp"
+        />
+
+
+    <ImageButton
+        android:id="@+id/send_button"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:background='@drawable/send_img'
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="5dp"
+        />
+
+    <ImageButton
+        android:id="@+id/file_button"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:background='@drawable/file_img'
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+
+        android:layout_marginBottom="5dp"
+
+        />
+
+
+    <EditText
+        android:id="@+id/message_send"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+
+
+        android:layout_marginRight="5dp"
+        android:layout_marginLeft="5dp"
+        android:ems="10"
+        android:gravity="start|top"
+        android:hint="@string/message_hint"
+        android:inputType="textMultiLine"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+
+        app:layout_constraintEnd_toStartOf="@id/smile_button"
+        app:layout_constraintStart_toEndOf="@id/file_button" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

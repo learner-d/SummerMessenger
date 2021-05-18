@@ -1,4 +1,4 @@
-package com.summermessenger
+package com.summermessenger.ui.chat
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -6,10 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.summermessenger.R
+import com.summermessenger.data.LoginDataSource
+import com.summermessenger.data.model.Message
 
-class MessagesAdapter(msgList: List<Message>, context: Context)
+class MessagesAdapter(val msgList: List<Message>, val context: Context)
     : RecyclerView.Adapter<MessagesAdapter.MessageViewHolder>() {
-    private val _msgList = msgList
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.chat_message_fragment, parent, false)
@@ -17,14 +19,14 @@ class MessagesAdapter(msgList: List<Message>, context: Context)
     }
 
     override fun getItemCount(): Int {
-        return _msgList.size;
+        return msgList.size;
     }
 
     override fun onBindViewHolder(holder: MessageViewHolder, position: Int) {
-        holder.sender.text = _msgList[position].sender.displayName
-        holder.messageText.text = _msgList[position].text
-        holder.messageTime.text = _msgList[position].timeStamp
-        if (MainActivity.MockUsers.indexOf(_msgList[position].sender) % 2 == 0)
+        holder.sender.text = msgList[position].sender.displayName
+        holder.messageText.text = msgList[position].text
+        holder.messageTime.text = msgList[position].timeStamp
+        if (LoginDataSource.MockUsers.indexOf(msgList[position].sender) % 2 == 0)
             ;
     }
 

@@ -1,4 +1,4 @@
-package com.summermessenger
+package com.summermessenger.data.model
 
 class Message(sender: User, text: String, timeStamp: String) {
     var sender: User = sender

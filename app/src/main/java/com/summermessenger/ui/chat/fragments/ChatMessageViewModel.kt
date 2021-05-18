@@ -1,4 +1,4 @@
-package com.summermessenger
+package com.summermessenger.ui.chat.fragments
 
 import androidx.lifecycle.ViewModel
 
