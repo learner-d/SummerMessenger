@@ -1,6 +1,7 @@
 package com.summermessenger.ui.chat
 
 import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.inputmethod.InputMethodManager
@@ -8,9 +9,12 @@ import android.widget.EditText
 import android.widget.ImageButton
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.summermessenger.ui.login.LoginActivity
 import androidx.recyclerview.widget.RecyclerView
+import com.summermessenger.MenuActivity
 import com.google.firebase.Timestamp
 import com.summermessenger.R
+//import com.summermessenger.data.LoginDataSource.Companion.MockUsers
 import com.summermessenger.data.MainRepository
 import com.summermessenger.data.model.Chat
 import com.summermessenger.data.model.Message
@@ -29,6 +33,7 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var _messagesRV: RecyclerView
     private lateinit var _multiText: EditText
     private lateinit var _sendBtn: ImageButton
+    private lateinit var _backBtn: ImageButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,6 +50,7 @@ class ChatActivity : AppCompatActivity() {
 
         _multiText = findViewById(R.id.message_send)
         _sendBtn = findViewById(R.id.send_button)
+        _backBtn = findViewById(R.id.back_button_menu)
         _sendBtn.setOnClickListener { v ->
             hideKeyboard()
 
@@ -58,6 +64,16 @@ class ChatActivity : AppCompatActivity() {
             _multiText.text.clear()
         }
 
+        _backBtn.setOnClickListener { v ->
+            onBackPressed()
+        }
+
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        hideKeyboard()
+        finish()
         //Завантажуємо дані з Firebase
         lifecycleScope.launchWhenStarted {
             loadData()
