@@ -16,20 +16,26 @@ import android.widget.ProgressBar
 import android.widget.Toast
 
 import com.summermessenger.R
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var loginViewModel: LoginViewModel
 
+    lateinit var username:EditText
+    lateinit var password:EditText
+    lateinit var login:Button
+    lateinit var loading:ProgressBar
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_login)
 
-        val username = findViewById<EditText>(R.id.username)
-        val password = findViewById<EditText>(R.id.password)
-        val login = findViewById<Button>(R.id.login)
-        val loading = findViewById<ProgressBar>(R.id.loading)
+        username = findViewById<EditText>(R.id.username)
+        password = findViewById<EditText>(R.id.password)
+        login = findViewById<Button>(R.id.login)
+        loading = findViewById<ProgressBar>(R.id.loading)
 
         loginViewModel = ViewModelProvider(this, LoginViewModelFactory())
                 .get(LoginViewModel::class.java)
@@ -82,18 +88,21 @@ class LoginActivity : AppCompatActivity() {
             setOnEditorActionListener { _, actionId, _ ->
                 when (actionId) {
                     EditorInfo.IME_ACTION_DONE ->
-                        loginViewModel.login(
-                                username.text.toString(),
-                                password.text.toString()
-                        )
+                        startLogin()
                 }
                 false
             }
 
             login.setOnClickListener {
                 loading.visibility = View.VISIBLE
-                loginViewModel.login(username.text.toString(), password.text.toString())
+                startLogin()
             }
+        }
+    }
+
+    fun startLogin(){
+        GlobalScope.launch {
+            loginViewModel.login(username.text.toString(), password.text.toString())
         }
     }
 

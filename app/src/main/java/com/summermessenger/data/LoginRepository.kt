@@ -7,7 +7,7 @@ import com.summermessenger.data.model.User
  * maintains an in-memory cache of login status and user credentials information.
  */
 
-class LoginRepository(val dataSource: LoginDataSource) {
+class LoginRepository(val dataSource: UsersDataSource) {
 
     // in-memory cache of the loggedInUser object
     var user: User? = null
@@ -27,7 +27,7 @@ class LoginRepository(val dataSource: LoginDataSource) {
         dataSource.logout()
     }
 
-    fun login(username: String, password: String): Result<User> {
+    suspend fun login(username: String, password: String): Result<User> {
         // handle login
         val result = dataSource.login(username, password)
 

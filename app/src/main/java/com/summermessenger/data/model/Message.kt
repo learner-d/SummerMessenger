@@ -1,15 +1,22 @@
 package com.summermessenger.data.model
 
+import com.google.firebase.Timestamp
+import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.DocumentSnapshot
+import com.summermessenger.util.await
 import java.util.*
 
-class Message(sender: User, text: String, timeStamp: Date) {
-    var sender: User = sender
-        get() = field;
-        set(value) {field = value};
-    var text: String = text
-        get() = field;
-        set(value) {field = value};
-    var timeStamp: Date = timeStamp
-        get() = field;
-        set(value) {field = value};
+data class Message(val sender: User, val text: String, val timeStamp: Timestamp) {
+    companion object{
+        suspend fun load(msgDoc: DocumentSnapshot) : Message {
+            val mdSenderRef = msgDoc["sender"] as DocumentReference
+            val sender = User.load(mdSenderRef.get().await())
+
+            val mdText = msgDoc["text"] as String
+
+            val mdTimestamp = msgDoc["timeStamp"] as Timestamp
+
+            return Message(sender, mdText, mdTimestamp)
+        }
+    }
 }

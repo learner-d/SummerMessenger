@@ -2,8 +2,6 @@ package com.summermessenger.ui.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.summermessenger.data.LoginDataSource
-import com.summermessenger.data.LoginRepository
 import com.summermessenger.data.MainRepository
 
 /**

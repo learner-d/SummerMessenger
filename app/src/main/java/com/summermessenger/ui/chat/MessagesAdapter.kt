@@ -9,7 +9,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.summermessenger.R
-import com.summermessenger.data.LoginDataSource
 import com.summermessenger.data.MainRepository
 import com.summermessenger.data.model.Message
 import java.text.SimpleDateFormat
@@ -32,15 +31,17 @@ class MessagesAdapter(val msgList: List<Message>, val context: Context)
     override fun onBindViewHolder(holder: MessageViewHolder, position: Int) {
         holder.sender.text = msgList[position].sender.displayName
         holder.messageText.text = msgList[position].text
-        holder.messageTime.text = timeFormatter.format(msgList[position].timeStamp)
+        holder.messageTime.text = timeFormatter.format(msgList[position].timeStamp.toDate())
 
         //установка позиції "моїх повідомлень
-        if (msgList[position].sender.id == MainRepository.loginRepository.user?.id) {
-            holder.messageInfoRoot.layoutParams =
-                    (holder.messageInfoRoot.layoutParams as LinearLayout.LayoutParams)
-                        .apply { gravity = Gravity.TOP or Gravity.END }
-            print("");
-        }
+        var msgGravity: Int
+        if (msgList[position].sender.username == MainRepository.loginRepository.user?.username)
+           msgGravity = Gravity.TOP or Gravity.END
+        else
+            msgGravity = Gravity.TOP or Gravity.START
+        holder.messageInfoRoot.layoutParams =
+            (holder.messageInfoRoot.layoutParams as LinearLayout.LayoutParams)
+                .apply { gravity = msgGravity }
     }
 
     class MessageViewHolder(view: View) : RecyclerView.ViewHolder(view) {

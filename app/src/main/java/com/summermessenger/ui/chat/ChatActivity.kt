@@ -1,34 +1,31 @@
 package com.summermessenger.ui.chat
 
 import android.content.Context
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageButton
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.summermessenger.ui.login.LoginActivity
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.Timestamp
 import com.summermessenger.R
-import com.summermessenger.data.LoginDataSource.Companion.MockUsers
 import com.summermessenger.data.MainRepository
+import com.summermessenger.data.model.Chat
 import com.summermessenger.data.model.Message
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.util.*
+import kotlin.collections.ArrayList
 
 class ChatActivity : AppCompatActivity() {
     lateinit var _inputMethodManager: InputMethodManager
 
-    val _messages = arrayListOf(
-            Message(MockUsers.find { user -> user.id == "real_doer" }!!, "Привіт!", Calendar.getInstance().time),
-            Message(MockUsers.find { user -> user.id == "nillado" }!!, "Здоров, друже!", Calendar.getInstance().time),
-            Message(MockUsers.find { user -> user.id == "nillado" }!!, "оаоаоаоа", Calendar.getInstance().time),
-            Message(
-                    MockUsers.find { user -> user.id == "real_doer" }!!,
-                    "Опа, опа! Бім, бом!",
-                    Calendar.getInstance().time
-            )
-    );
+    lateinit var mChat: Chat;
+    val mMessages = ArrayList<Message>();
+    lateinit var mMessagesAdapter: MessagesAdapter;
+
     private lateinit var _messagesRV: RecyclerView
     private lateinit var _multiText: EditText
     private lateinit var _sendBtn: ImageButton
@@ -43,7 +40,8 @@ class ChatActivity : AppCompatActivity() {
         _messagesRV.layoutManager = LinearLayoutManager(this).apply {
             stackFromEnd = true
         }
-        _messagesRV.adapter = MessagesAdapter(_messages, this)
+        mMessagesAdapter = MessagesAdapter(mMessages, this)
+        _messagesRV.adapter = mMessagesAdapter
 
         _multiText = findViewById(R.id.message_send)
         _sendBtn = findViewById(R.id.send_button)
@@ -53,13 +51,27 @@ class ChatActivity : AppCompatActivity() {
             val sender = MainRepository.loginRepository.user!!
             val msgText = _multiText.text.toString()
             val currentTime = Calendar.getInstance().time
-            val newMessage = Message(sender, msgText, currentTime)
-            _messages.add(newMessage)
-            (_messagesRV.adapter as MessagesAdapter).notifyDataSetChanged()
+            val newMessage = Message(sender, msgText, Timestamp(currentTime))
+            mMessages.add(newMessage)
+            mMessagesAdapter.notifyDataSetChanged()
 
             _multiText.text.clear()
         }
 
+        //Завантажуємо дані з Firebase
+        lifecycleScope.launchWhenStarted {
+            loadData()
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+    }
+
+    private suspend fun loadData(){
+        mChat = MainRepository.chatsDataSource.loadChat("1")
+        mMessages.addAll(mChat.messages)
+        mMessagesAdapter.notifyDataSetChanged()
     }
 
     private fun hideKeyboard(){
