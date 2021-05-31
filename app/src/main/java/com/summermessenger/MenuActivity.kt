@@ -3,7 +3,6 @@ package com.summermessenger
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.viewbinding.ViewBinding
 import android.view.View
 import android.widget.Button
 import android.widget.Toast
@@ -15,6 +14,7 @@ import com.mikepenz.materialdrawer.DrawerBuilder
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem
+import com.summermessenger.data.MainRepository
 import com.summermessenger.databinding.ActivityMenuBinding
 import com.summermessenger.ui.chat.ChatActivity
 
@@ -49,7 +49,7 @@ class MenuActivity : AppCompatActivity() {
 
     override fun onStart(){
         super.onStart()
-        initFileds()
+        initFields()
         initFunction()
     }
 
@@ -113,16 +113,17 @@ class MenuActivity : AppCompatActivity() {
 
 
     private fun createHeader() {
+        var loggedInUser = MainRepository.loginRepository.user
         mHeader = AccountHeaderBuilder()
             .withActivity(this)
             .withHeaderBackground(R.drawable.header)
             .addProfiles(
-                ProfileDrawerItem().withName("Volkov Albert")
-                    .withEmail("+380992527808")
+                ProfileDrawerItem().withName(loggedInUser?.displayName ?: "(null)")
+                    .withEmail(loggedInUser?.phoneNumber ?: "")
             ).build()
     }
 
-    private fun initFileds(){
+    private fun initFields(){
         mToolbar = mBinding.mainToolbar
     }
 }

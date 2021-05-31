@@ -5,9 +5,10 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.model.Document
 
 data class User(
-    var username: String = "",
-    var displayName: String = "",
-    var password: String = "") {
+    var username: String,
+    var displayName: String,
+    var password: String,
+    var phoneNumber:String) {
 
     companion object{
         suspend fun load(userDoc:DocumentSnapshot): User{
@@ -20,7 +21,8 @@ data class User(
             val password = udPassword as String
 
             val displayName = userDoc["displayName"] as String? ?: ""
-            return User(username,displayName,password)
+            val phoneNumber = userDoc["phoneNumber"] as String? ?: ""
+            return User(username,displayName,password, phoneNumber)
         }
     }
 }
