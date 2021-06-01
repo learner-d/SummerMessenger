@@ -19,7 +19,7 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="96dp"
         android:layout_marginEnd="24dp"
-        android:hint="@string/prompt_email"
+        android:hint="Phone number"
         android:inputType="phone"
         android:selectAllOnFocus="true"
         app:layout_constraintEnd_toEndOf="parent"
@@ -34,6 +34,8 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="24dp"
         android:hint="Code from message"
+        android:visibility="gone"
+        tools:visibility="visible"
         android:imeActionLabel="@string/action_sign_in_short"
         android:imeOptions="actionDone"
         android:inputType="numberDecimal"
@@ -43,7 +45,7 @@
         app:layout_constraintTop_toBottomOf="@id/phone_number" />
 
     <Button
-        android:id="@+id/request_code"
+        android:id="@+id/btn_request_code"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="start"
@@ -60,7 +62,7 @@
         app:layout_constraintVertical_bias="0.2" />
 
     <Button
-        android:id="@+id/login"
+        android:id="@+id/btn_login_tel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="start"
@@ -69,11 +71,13 @@
         android:layout_marginEnd="48dp"
         android:layout_marginBottom="64dp"
         android:enabled="false"
-        android:text="Sign in by number"
+        android:text="Sign in"
+        android:visibility="gone"
+        tools:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/request_code"
+        app:layout_constraintTop_toBottomOf="@id/btn_request_code"
         app:layout_constraintVertical_bias="0.2" />
 
     <ProgressBar

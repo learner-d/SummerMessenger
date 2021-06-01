@@ -11,7 +11,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.summermessenger.ui.login.LoginActivity
 import androidx.recyclerview.widget.RecyclerView
-import com.summermessenger.MenuActivity
 import com.google.firebase.Timestamp
 import com.summermessenger.R
 //import com.summermessenger.data.LoginDataSource.Companion.MockUsers

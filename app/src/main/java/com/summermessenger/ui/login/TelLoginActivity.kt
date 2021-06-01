@@ -25,27 +25,29 @@ class TelLoginActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_tel_login)
 
-        val username = findViewById<EditText>(R.id.username)
-        val password = findViewById<EditText>(R.id.password)
-        val login = findViewById<Button>(R.id.login)
+        val phoneNumber = findViewById<EditText>(R.id.phone_number)
+        val msgCode = findViewById<EditText>(R.id.msg_code)
+        val btnRequestCode = findViewById<Button>(R.id.btn_request_code)
+        val btnLoginTel = findViewById<Button>(R.id.btn_login_tel)
         val loading = findViewById<ProgressBar>(R.id.loading)
 
         loginViewModel = ViewModelProvider(this, LoginViewModelFactory())
             .get(LoginViewModel::class.java)
 
-        loginViewModel.loginFormState.observe(
+        loginViewModel.telLoginFormState.observe(
             this,
             Observer {
                 val loginState = it ?: return@Observer
 
+                btnRequestCode.isEnabled = loginState.isPhoneNumValid
                 // disable login button unless both username / password is valid
-                login.isEnabled = loginState.isDataValid
+                btnLoginTel.isEnabled = loginState.isMsgCodeValid
 
-                if (loginState.usernameError != null) {
-                    username.error = getString(loginState.usernameError)
+                if (loginState.phoneNumError != null) {
+                    phoneNumber.error = getString(loginState.phoneNumError)
                 }
-                if (loginState.passwordError != null) {
-                    password.error = getString(loginState.passwordError)
+                if (loginState.msgCodeError != null) {
+                    msgCode.error = getString(loginState.msgCodeError)
                 }
             }
         )
@@ -66,35 +68,27 @@ class TelLoginActivity : AppCompatActivity() {
             finish()
         })
 
-        username.afterTextChanged {
-            loginViewModel.loginDataChanged(
-                username.text.toString(),
-                password.text.toString()
+        phoneNumber.afterTextChanged {
+            loginViewModel.telLoginDataChanged(
+                phoneNumber.text.toString(),
+                msgCode.text.toString()
             )
         }
 
-        password.apply {
+        btnRequestCode.setOnClickListener {
+            phoneNumber.isEnabled = false
+            loginViewModel.applyPhoneNum(phoneNumber.text.toString())
+            msgCode.visibility = View.VISIBLE
+            btnLoginTel.visibility = View.VISIBLE
+            //loading.visibility = View.VISIBLE
+        }
+
+        msgCode.apply {
             afterTextChanged {
-                loginViewModel.loginDataChanged(
-                    username.text.toString(),
-                    password.text.toString()
+                loginViewModel.telLoginDataChanged(
+                    phoneNumber.text.toString(),
+                    msgCode.text.toString()
                 )
-            }
-
-            setOnEditorActionListener { _, actionId, _ ->
-                when (actionId) {
-                    EditorInfo.IME_ACTION_DONE ->
-                        loginViewModel.login(
-                            username.text.toString(),
-                            password.text.toString()
-                        )
-                }
-                false
-            }
-
-            login.setOnClickListener {
-                loading.visibility = View.VISIBLE
-                loginViewModel.login(username.text.toString(), password.text.toString())
             }
         }
     }

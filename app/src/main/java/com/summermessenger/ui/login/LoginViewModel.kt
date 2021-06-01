@@ -9,18 +9,22 @@ import com.summermessenger.data.LoginRepository
 import com.summermessenger.data.Result
 
 import com.summermessenger.R
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel() {
 
     private val _loginFormState = MutableLiveData<LoginFormState>()
     val loginFormState: LiveData<LoginFormState> = _loginFormState
 
+    private val  _telLoginFormState = MutableLiveData<TelLoginFormState>()
+    val  telLoginFormState: LiveData<TelLoginFormState> = _telLoginFormState
+
     private val _loginResult = MutableLiveData<LoginResult>()
     val loginResult: LiveData<LoginResult> = _loginResult
+
+    fun applyPhoneNum(phoneNum: String){
+        // can be launched in a separate asynchronous job
+    }
 
     fun login(username: String, password: String) {
         // can be launched in a separate asynchronous job
@@ -42,6 +46,25 @@ class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel()
         } else {
             _loginFormState.value = LoginFormState(isDataValid = true)
         }
+    }
+
+    fun telLoginDataChanged(phoneNum: String, msgCode:String){
+        var phoneNumValid = isPhoneNumValid(phoneNum)
+        var msgCodeValid = isMsgCodeValid(msgCode)
+
+        _telLoginFormState.value = TelLoginFormState(isPhoneNumValid = phoneNumValid,
+                                                        isMsgCodeValid = msgCodeValid)
+    }
+
+    // A placeholder phone number validation check
+    private fun isPhoneNumValid(phoneNum: String):Boolean{
+        return Patterns.PHONE.matcher(phoneNum).matches()
+    }
+
+
+    // A placeholder message code validation check
+    private fun isMsgCodeValid(msgCode:String):Boolean{
+        return true
     }
 
     // A placeholder username validation check
