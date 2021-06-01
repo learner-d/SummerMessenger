@@ -5,9 +5,10 @@
     android:layout_height="match_parent"
     tools:context=".ChatsListFragment">
 
-    <TextView
+    <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Hello" />
+        android:background="@color/md_teal_50"
+        tools:listitem="@layout/chat_preview_fragment"/>
 
 </FrameLayout>
