@@ -28,9 +28,6 @@ class MenuActivity : AppCompatActivity() {
     private lateinit var mChatButton: Button
 
 
-
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mBinding = ActivityMenuBinding.inflate(layoutInflater)
