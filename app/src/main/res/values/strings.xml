@@ -13,4 +13,5 @@
     <string name="message_hint">Написать сообщение...</string>
     <string name="nicknames">Дима Гергель</string>
     <string name="online_status">В сети</string>
+    <string name="title_activity_tel_login">TelLoginActivity</string>
 </resources>

@@ -15,46 +15,42 @@ import android.widget.Toast
 
 import com.summermessenger.R
 import com.summermessenger.util.ext.afterTextChanged
-import com.summermessenger.util.ext.replaceActivity
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 
-class LoginActivity : AppCompatActivity() {
+class TelLoginActivity : AppCompatActivity() {
 
     private lateinit var loginViewModel: LoginViewModel
 
-    lateinit var username:EditText
-    lateinit var password:EditText
-    lateinit var login:Button
-    lateinit var loading:ProgressBar
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_login)
+        setContentView(R.layout.activity_tel_login)
 
-        username = findViewById<EditText>(R.id.username)
-        password = findViewById<EditText>(R.id.password)
-        login = findViewById<Button>(R.id.login)
-        loading = findViewById<ProgressBar>(R.id.loading)
+        val username = findViewById<EditText>(R.id.username)
+        val password = findViewById<EditText>(R.id.password)
+        val login = findViewById<Button>(R.id.login)
+        val loading = findViewById<ProgressBar>(R.id.loading)
 
         loginViewModel = ViewModelProvider(this, LoginViewModelFactory())
-                .get(LoginViewModel::class.java)
+            .get(LoginViewModel::class.java)
 
-        loginViewModel.loginFormState.observe(this@LoginActivity, Observer {
-            val loginState = it ?: return@Observer
+        loginViewModel.loginFormState.observe(
+            this,
+            Observer {
+                val loginState = it ?: return@Observer
 
-            // disable login button unless both username / password is valid
-            login.isEnabled = loginState.isDataValid
+                // disable login button unless both username / password is valid
+                login.isEnabled = loginState.isDataValid
 
-            if (loginState.usernameError != null) {
-                username.error = getString(loginState.usernameError)
+                if (loginState.usernameError != null) {
+                    username.error = getString(loginState.usernameError)
+                }
+                if (loginState.passwordError != null) {
+                    password.error = getString(loginState.passwordError)
+                }
             }
-            if (loginState.passwordError != null) {
-                password.error = getString(loginState.passwordError)
-            }
-        })
+        )
 
-        loginViewModel.loginResult.observe(this@LoginActivity, Observer {
+        loginViewModel.loginResult.observe(this, Observer {
             val loginResult = it ?: return@Observer
 
             loading.visibility = View.GONE
@@ -72,56 +68,49 @@ class LoginActivity : AppCompatActivity() {
 
         username.afterTextChanged {
             loginViewModel.loginDataChanged(
-                    username.text.toString(),
-                    password.text.toString()
+                username.text.toString(),
+                password.text.toString()
             )
         }
 
         password.apply {
             afterTextChanged {
                 loginViewModel.loginDataChanged(
-                        username.text.toString(),
-                        password.text.toString()
+                    username.text.toString(),
+                    password.text.toString()
                 )
             }
 
             setOnEditorActionListener { _, actionId, _ ->
                 when (actionId) {
                     EditorInfo.IME_ACTION_DONE ->
-                        startLogin()
+                        loginViewModel.login(
+                            username.text.toString(),
+                            password.text.toString()
+                        )
                 }
                 false
             }
 
             login.setOnClickListener {
                 loading.visibility = View.VISIBLE
-                startLogin()
+                loginViewModel.login(username.text.toString(), password.text.toString())
             }
         }
     }
 
-    fun startLogin(){
-        GlobalScope.launch {
-            loginViewModel.login(username.text.toString(), password.text.toString())
-        }
-    }
-
     private fun updateUiWithUser(model: LoggedInUserView) {
-        val welcome = "Welcome, "
+        val welcome = getString(R.string.welcome)
         val displayName = model.displayName
         // TODO : initiate successful logged in experience
         Toast.makeText(
-                applicationContext,
-                "$welcome $displayName",
-                Toast.LENGTH_LONG
+            applicationContext,
+            "$welcome $displayName",
+            Toast.LENGTH_LONG
         ).show()
     }
 
     private fun showLoginFailed(@StringRes errorString: Int) {
         Toast.makeText(applicationContext, errorString, Toast.LENGTH_SHORT).show()
-    }
-
-    fun goToTelLoginPage_OnClick(view: View) {
-        replaceActivity(TelLoginActivity())
     }
 }
