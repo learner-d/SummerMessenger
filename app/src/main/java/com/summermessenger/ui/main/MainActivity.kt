@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
+import com.google.firebase.auth.FirebaseAuth
 import com.mikepenz.materialdrawer.AccountHeader
 import com.mikepenz.materialdrawer.AccountHeaderBuilder
 import com.mikepenz.materialdrawer.Drawer
@@ -24,10 +25,10 @@ import com.summermessenger.ui.login.LoginActivity
 const val LOGIN_REQUEST_CODE = 501
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var mAuth: FirebaseAuth
     private lateinit var mBinding: ActivityMainBinding
     private lateinit var mDrawer: Drawer
     private lateinit var mHeader: AccountHeader
-    private lateinit var mToolbar: Toolbar
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,7 +39,6 @@ class MainActivity : AppCompatActivity() {
         mBinding.chatButton.setOnClickListener { v ->
             intent = Intent(this, ChatActivity ::class.java )
             startActivity(intent)
-
         }
     }
 
@@ -46,13 +46,16 @@ class MainActivity : AppCompatActivity() {
         super.onStart()
         initFields()
         initFunction()
+    }
 
-        if (MainRepository.loginRepository.isLoggedIn == false)
-            goToLogin()
+    private fun initFields(){
+        mAuth = FirebaseAuth.getInstance()
     }
 
     private fun initFunction() {
-        setSupportActionBar(mToolbar)
+        if (mAuth.currentUser == null && !MainRepository.loginRepository.isLoggedIn)
+            goToLogin()
+        setSupportActionBar(mBinding.mainToolbar)
         createHeader()
         createDrawer()
     }
@@ -60,7 +63,7 @@ class MainActivity : AppCompatActivity() {
     private fun createDrawer() {
         mDrawer = DrawerBuilder()
                 .withActivity(this)
-                .withToolbar(mToolbar)
+                .withToolbar(mBinding.mainToolbar)
                 .withActionBarDrawerToggle(true)
                 .withSelectedItem(-1)
                 .withAccountHeader(mHeader)
@@ -96,9 +99,7 @@ class MainActivity : AppCompatActivity() {
                                 .withIcon(R.drawable.ic_baseline_eco_24)
 
                 ) .withOnDrawerItemClickListener(object : Drawer.OnDrawerItemClickListener{
-                    override fun onItemClick(view: View?, position: Int, drawerItem: IDrawerItem<*>):
-
-                            Boolean {
+                    override fun onItemClick(view: View?, position: Int, drawerItem: IDrawerItem<*>): Boolean {
                         Toast.makeText(applicationContext,position.toString(), Toast.LENGTH_SHORT).show()
                         return false
                     }
@@ -117,11 +118,6 @@ class MainActivity : AppCompatActivity() {
                                 .withEmail(loggedInUser?.phoneNumber ?: "")
                 ).build()
     }
-
-    private fun initFields(){
-        mToolbar = mBinding.mainToolbar
-    }
-
 
     private fun goToLogin(){
         startActivityForResult(Intent(this, LoginActivity::class.java), LOGIN_REQUEST_CODE)

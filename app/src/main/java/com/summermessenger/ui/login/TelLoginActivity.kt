@@ -77,7 +77,7 @@ class TelLoginActivity : AppCompatActivity() {
 
         btnRequestCode.setOnClickListener {
             phoneNumber.isEnabled = false
-            loginViewModel.applyPhoneNum(phoneNumber.text.toString())
+            loginViewModel.applyPhoneNum(phoneNumber.text.toString(), this)
             msgCode.visibility = View.VISIBLE
             btnLoginTel.visibility = View.VISIBLE
             //loading.visibility = View.VISIBLE

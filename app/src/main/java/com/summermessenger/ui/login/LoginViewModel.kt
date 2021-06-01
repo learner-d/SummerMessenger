@@ -1,18 +1,24 @@
 package com.summermessenger.ui.login
 
+import android.app.Activity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import android.util.Patterns
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.FirebaseException
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.PhoneAuthCredential
+import com.google.firebase.auth.PhoneAuthProvider
 import com.summermessenger.data.LoginRepository
 import com.summermessenger.data.Result
 
 import com.summermessenger.R
+import com.summermessenger.data.FirebaseData
 import kotlinx.coroutines.launch
+import java.util.concurrent.TimeUnit
 
 class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel() {
-
     private val _loginFormState = MutableLiveData<LoginFormState>()
     val loginFormState: LiveData<LoginFormState> = _loginFormState
 
@@ -22,8 +28,33 @@ class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel()
     private val _loginResult = MutableLiveData<LoginResult>()
     val loginResult: LiveData<LoginResult> = _loginResult
 
-    fun applyPhoneNum(phoneNum: String){
+    private val _telLoginResult = MutableLiveData<LoginResult>()
+    val telLoginResult: LiveData<LoginResult> = _telLoginResult
+
+    fun applyPhoneNum(phoneNum: String, activity: Activity){
         // can be launched in a separate asynchronous job
+        PhoneAuthProvider.getInstance().verifyPhoneNumber(phoneNum,
+                60, TimeUnit.SECONDS,
+                activity,
+                object : PhoneAuthProvider.OnVerificationStateChangedCallbacks()
+                {
+                    override fun onVerificationCompleted(credential: PhoneAuthCredential) {
+                        FirebaseData.Auth.signInWithCredential(credential).addOnCompleteListener{
+                            if(it.isSuccessful){
+                                _telLoginResult.postValue(LoginResult(success = LoggedInUserView(displayName = "")))
+                            }
+                        }
+                    }
+
+                    override fun onVerificationFailed(p0: FirebaseException) {
+                        _telLoginResult.postValue(LoginResult(error = R.string.verify_failed))
+                    }
+
+                    override fun onCodeSent(p0: String, p1: PhoneAuthProvider.ForceResendingToken) {
+                        super.onCodeSent(p0, p1)
+                    }
+                }
+        )
     }
 
     fun login(username: String, password: String) {
