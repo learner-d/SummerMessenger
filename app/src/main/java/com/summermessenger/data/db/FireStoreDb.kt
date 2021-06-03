@@ -1,4 +1,4 @@
-package com.summermessenger.data
+package com.summermessenger.data.db
 
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase

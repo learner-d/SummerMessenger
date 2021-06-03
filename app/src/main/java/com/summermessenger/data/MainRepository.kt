@@ -1,5 +1,7 @@
 package com.summermessenger.data
 
+import com.summermessenger.data.db.FireStoreDb
+
 class MainRepository {
     companion object{
         val fireStoreDb = FireStoreDb()

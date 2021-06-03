@@ -1,6 +1,6 @@
 package com.summermessenger.data
 
-import com.google.android.gms.tasks.Tasks
+import com.summermessenger.data.db.FireStoreDb
 import com.summermessenger.data.model.User
 import com.summermessenger.util.await
 import java.io.IOException
@@ -8,7 +8,7 @@ import java.io.IOException
 /**
  * Class that handles authentication w/ login credentials and retrieves user information.
  */
-class UsersDataSource(val fireStoreDb: FireStoreDb) {
+class UsersDataSource(fireStoreDb: FireStoreDb) {
     val usersDbCollection = fireStoreDb.users
 
     suspend fun login(username: String, password: String): Result<User> {
