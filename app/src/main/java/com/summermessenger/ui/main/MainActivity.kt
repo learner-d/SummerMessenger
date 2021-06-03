@@ -6,6 +6,9 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import com.google.android.material.bottomnavigation.BottomNavigationMenu
+import com.google.android.material.bottomnavigation.BottomNavigationMenuView
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.mikepenz.materialdrawer.AccountHeader
 import com.mikepenz.materialdrawer.AccountHeaderBuilder
@@ -27,16 +30,40 @@ class MainActivity : AppCompatActivity() {
     private lateinit var mBinding: ActivityMainBinding
     private lateinit var mDrawer: Drawer
     private lateinit var mHeader: AccountHeader
+    private lateinit var mBottomNavigationView: BottomNavigationView
+
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mBinding = ActivityMainBinding.inflate(layoutInflater)
+        mBottomNavigationView = mBinding.bottomMenuNav
         setContentView(mBinding.root)
 
         mBinding.chatButton.setOnClickListener { v ->
             intent = Intent(this, ChatActivity ::class.java )
             startActivity(intent)
+        }
+        mBottomNavigationView.setOnNavigationItemSelectedListener{ item ->
+            when(item.itemId) {
+                R.id.chat_nav -> {
+                    // Respond to navigation item 1 click
+                    Toast.makeText(this, "hello chat_nav", Toast.LENGTH_SHORT).show()
+                    true
+                }
+                R.id.home_nav -> {
+                    // Respond to navigation item 2 click
+                    Toast.makeText(this, "hello home_nav", Toast.LENGTH_SHORT).show()
+                    true
+                }
+                R.id.settings_nav -> {
+                    // Respond to navigation item 3 click
+                    Toast.makeText(this, "hello settings", Toast.LENGTH_SHORT).show()
+                    true
+                }
+                else -> false
+            }
         }
     }
 

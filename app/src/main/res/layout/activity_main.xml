@@ -7,7 +7,6 @@
     android:background="@color/theme_color_2"
     tools:context=".ui.main.MainActivity">
 
-
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/main_toolbar"
         android:layout_width="match_parent"
@@ -81,11 +80,10 @@
         android:layout_height="wrap_content"
         android:background="@color/theme_color_1"
         android:elevation="4dp"
+        app:menu="@menu/bottom_navigation_menu"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
     </com.google.android.material.bottomnavigation.BottomNavigationView>
-
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
