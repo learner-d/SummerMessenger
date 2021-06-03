@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.mikepenz.materialdrawer.AccountHeader
 import com.mikepenz.materialdrawer.AccountHeaderBuilder
@@ -27,31 +28,35 @@ class MainActivity : AppCompatActivity() {
     private lateinit var mBinding: ActivityMainBinding
     private lateinit var mDrawer: Drawer
     private lateinit var mHeader: AccountHeader
+    private lateinit var mViewModel: MainViewModel
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        mAuth = FirebaseAuth.getInstance()
+
         mBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
 
         mBinding.chatButton.setOnClickListener { v ->
-            intent = Intent(this, ChatActivity ::class.java )
+            intent = Intent(this, ChatActivity::class.java)
             startActivity(intent)
         }
+
+        mViewModel = ViewModelProvider(this, MainViewModelFactory())
+                        .get(MainViewModel::class.java)
     }
 
     override fun onStart(){
         super.onStart()
-        initFields()
+        //initFields()
         initFunction()
     }
 
-    private fun initFields(){
-        mAuth = FirebaseAuth.getInstance()
-    }
-
     private fun initFunction() {
-        if (mAuth.currentUser == null && !MainRepository.usersRepository.isLoggedIn)
+        mViewModel.loginDefault()
+        if (!MainRepository.usersRepository.isLoggedIn)
             goToLogin()
         setSupportActionBar(mBinding.mainToolbar)
         createHeader()
@@ -94,11 +99,24 @@ class MainActivity : AppCompatActivity() {
                                 .withIconTintingEnabled(true)
                                 .withName("О нас")
                                 .withSelectable(false)
-                                .withIcon(R.drawable.ic_baseline_eco_24)
+                                .withIcon(R.drawable.ic_baseline_eco_24),
 
-                ) .withOnDrawerItemClickListener(object : Drawer.OnDrawerItemClickListener{
+                        PrimaryDrawerItem().withIdentifier(105)
+                            .withIconTintingEnabled(true)
+                            .withName("Log out")
+                            .withSelectable(false)
+                            .withIcon(R.drawable.ic_baseline_west_24)
+
+                ).withOnDrawerItemClickListener(object : Drawer.OnDrawerItemClickListener{
                     override fun onItemClick(view: View?, position: Int, drawerItem: IDrawerItem<*>): Boolean {
-                        Toast.makeText(applicationContext,position.toString(), Toast.LENGTH_SHORT).show()
+                        when(position){
+                            105 -> {
+
+                            }
+                            else -> {
+                                Toast.makeText(applicationContext,position.toString(), Toast.LENGTH_SHORT).show()
+                            }
+                        }
                         return false
                     }
 
@@ -107,7 +125,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun createHeader() {
-        var loggedInUser = MainRepository.usersRepository.loggedInUser
+        val loggedInUser = MainRepository.usersRepository.loggedInUser
         mHeader = AccountHeaderBuilder()
                 .withActivity(this)
                 .withHeaderBackground(R.drawable.header)
@@ -125,6 +143,11 @@ class MainActivity : AppCompatActivity() {
         val intent = Intent(this, ChatActivity::class.java)
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_TASK_ON_HOME)
         startActivity(intent)
+    }
+
+    private fun logout(){
+        mViewModel.logout()
+        goToLogin()
     }
 
 

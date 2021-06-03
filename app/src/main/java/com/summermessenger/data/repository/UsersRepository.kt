@@ -1,8 +1,11 @@
 package com.summermessenger.data.repository
 
+import com.summermessenger.data.FirebaseData
 import com.summermessenger.data.Result
 import com.summermessenger.data.db.UsersDao
 import com.summermessenger.data.model.User
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 /**
  * Class that requests authentication and user information from the remote data source and
@@ -10,7 +13,7 @@ import com.summermessenger.data.model.User
  */
 
 class UsersRepository private constructor (private val usersDao: UsersDao) {
-    companion object{
+    companion object {
         private var _instance:UsersRepository? = null
         fun getInstance(usersDao: UsersDao) = _instance ?: synchronized(this){
             _instance ?: UsersRepository(usersDao)
@@ -32,8 +35,11 @@ class UsersRepository private constructor (private val usersDao: UsersDao) {
 
     fun logout() {
         loggedInUser = null
-        //dataSource.logout()
-        // TODO: revoke authentication
+        FirebaseData.Auth.signOut()
+    }
+
+    suspend fun loginDefault(){
+        loggedInUser = usersDao.tryGetUser(FirebaseData.Auth.currentUser)
     }
 
     suspend fun login(username: String, password: String): Result<User> {

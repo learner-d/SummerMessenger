@@ -30,7 +30,9 @@ class LoginViewModel(private val usersRepository: UsersRepository) : ViewModel()
     private val _telLoginResult = MutableLiveData<LoginResult>()
     val telLoginResult: LiveData<LoginResult> = _telLoginResult
 
-    fun applyPhoneNum(phoneNum: String, activity: Activity){
+    private var _verificationId = ""
+
+    fun requestMsgCode(phoneNum: String, activity: Activity){
         // can be launched in a separate asynchronous job
         PhoneAuthProvider.getInstance().verifyPhoneNumber(phoneNum,
                 60, TimeUnit.SECONDS,
@@ -49,11 +51,21 @@ class LoginViewModel(private val usersRepository: UsersRepository) : ViewModel()
                         _telLoginResult.postValue(LoginResult(error = R.string.verify_failed))
                     }
 
-                    override fun onCodeSent(p0: String, p1: PhoneAuthProvider.ForceResendingToken) {
-                        super.onCodeSent(p0, p1)
+                    override fun onCodeSent(verificationId: String, token: PhoneAuthProvider.ForceResendingToken) {
+                        super.onCodeSent(verificationId, token)
+                        _verificationId = verificationId
                     }
                 }
         )
+    }
+
+    fun verifyMsgCode(smsCode:String) {
+        val credential = PhoneAuthProvider.getCredential(_verificationId, smsCode);
+        FirebaseData.Auth.signInWithCredential(credential).addOnCompleteListener {
+            if(it.isSuccessful){
+                _telLoginResult.postValue(LoginResult(success = LoggedInUserView(displayName = "")))
+            }
+        }
     }
 
     fun login(username: String, password: String) {

@@ -7,23 +7,26 @@ import android.os.Bundle
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import android.view.View
-import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
+import com.google.firebase.auth.PhoneAuthProvider
 
 import com.summermessenger.R
+import com.summermessenger.databinding.ActivityTelLoginBinding
 import com.summermessenger.util.ext.afterTextChanged
 
 class TelLoginActivity : AppCompatActivity() {
 
     private lateinit var loginViewModel: LoginViewModel
+    private lateinit var mBinding: ActivityTelLoginBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_tel_login)
+        mBinding = ActivityTelLoginBinding.inflate(layoutInflater)
+        setContentView(mBinding.root)
 
         val phoneNumber = findViewById<EditText>(R.id.phone_number)
         val msgCode = findViewById<EditText>(R.id.msg_code)
@@ -52,7 +55,7 @@ class TelLoginActivity : AppCompatActivity() {
             }
         )
 
-        loginViewModel.loginResult.observe(this, Observer {
+        loginViewModel.telLoginResult.observe(this, Observer {
             val loginResult = it ?: return@Observer
 
             loading.visibility = View.GONE
@@ -77,10 +80,14 @@ class TelLoginActivity : AppCompatActivity() {
 
         btnRequestCode.setOnClickListener {
             phoneNumber.isEnabled = false
-            loginViewModel.applyPhoneNum(phoneNumber.text.toString(), this)
+            loginViewModel.requestMsgCode(phoneNumber.text.toString(), this)
             msgCode.visibility = View.VISIBLE
             btnLoginTel.visibility = View.VISIBLE
             //loading.visibility = View.VISIBLE
+        }
+
+        mBinding.btnLoginTel.setOnClickListener {
+            loginViewModel.verifyMsgCode(msgCode.text.toString())
         }
 
         msgCode.apply {

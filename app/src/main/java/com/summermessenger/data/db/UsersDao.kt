@@ -1,7 +1,9 @@
 package com.summermessenger.data.db
 
+import com.google.firebase.auth.FirebaseUser
 import com.summermessenger.R
 import com.summermessenger.SummerMessenger
+import com.summermessenger.data.FirebaseData
 import com.summermessenger.data.Result
 import com.summermessenger.data.model.User
 import com.summermessenger.util.await
@@ -11,8 +13,8 @@ class UsersDao(val db:FireStoreDb) {
     fun getUsers() : List<User>{
         TODO()
     }
-    private suspend fun getUser(userId:Int) : User? {
-        val userDoc = db.users.document("$userId").get().await()
+    private suspend fun getUser(userId:String) : User? {
+        val userDoc = db.users.document(userId).get().await()
         if(userDoc.exists()){
             val user = User.load(userDoc)
             return user
@@ -32,6 +34,14 @@ class UsersDao(val db:FireStoreDb) {
         else
             return Result.Error(IllegalAccessException("Неправильний пароль!"))
     }
+
+    suspend fun tryGetUser(fbUser: FirebaseUser?) : User? {
+        if (fbUser!=null)
+            return getUser(fbUser.uid)
+
+        return null
+    }
+
     fun deleteUser(userId: Int){
         TODO()
     }
