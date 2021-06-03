@@ -9,7 +9,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.summermessenger.R
-import com.summermessenger.data.MainRepository
+import com.summermessenger.data.repository.MainRepository
 import com.summermessenger.data.model.Message
 import java.text.SimpleDateFormat
 import java.util.*
@@ -35,7 +35,7 @@ class MessagesAdapter(val msgList: List<Message>, val context: Context)
 
         //установка позиції "моїх повідомлень
         var msgGravity: Int
-        if (msgList[position].sender.username == MainRepository.loginRepository.user?.username)
+        if (msgList[position].sender.username == MainRepository.usersRepository.loggedInUser?.username)
            msgGravity = Gravity.TOP or Gravity.END
         else
             msgGravity = Gravity.TOP or Gravity.START

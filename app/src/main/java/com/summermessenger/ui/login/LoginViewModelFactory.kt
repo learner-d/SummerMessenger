@@ -2,7 +2,8 @@ package com.summermessenger.ui.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.summermessenger.data.MainRepository
+import com.summermessenger.data.repository.MainRepository
+import com.summermessenger.data.repository.UsersRepository
 
 /**
  * ViewModel provider factory to instantiate LoginViewModel.
@@ -14,7 +15,7 @@ class LoginViewModelFactory : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(LoginViewModel::class.java)) {
             return LoginViewModel(
-                    loginRepository = MainRepository.loginRepository
+                usersRepository = MainRepository.usersRepository
             ) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")

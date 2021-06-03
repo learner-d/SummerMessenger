@@ -7,10 +7,9 @@ import androidx.lifecycle.ViewModel
 import android.util.Patterns
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.FirebaseException
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthProvider
-import com.summermessenger.data.LoginRepository
+import com.summermessenger.data.repository.UsersRepository
 import com.summermessenger.data.Result
 
 import com.summermessenger.R
@@ -18,7 +17,7 @@ import com.summermessenger.data.FirebaseData
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 
-class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel() {
+class LoginViewModel(private val usersRepository: UsersRepository) : ViewModel() {
     private val _loginFormState = MutableLiveData<LoginFormState>()
     val loginFormState: LiveData<LoginFormState> = _loginFormState
 
@@ -60,7 +59,7 @@ class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel()
     fun login(username: String, password: String) {
         // can be launched in a separate asynchronous job
         viewModelScope.launch {
-            val result = loginRepository.login(username, password)
+            val result = usersRepository.login(username, password)
             if (result is Result.Success) {
                 _loginResult.postValue(LoginResult(success = LoggedInUserView(displayName = result.data.displayName)))
             } else {

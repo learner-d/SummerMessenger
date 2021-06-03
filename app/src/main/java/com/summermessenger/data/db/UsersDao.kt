@@ -1,16 +1,16 @@
-package com.summermessenger.data.dao
+package com.summermessenger.data.db
 
-import android.content.Context
 import com.summermessenger.R
 import com.summermessenger.SummerMessenger
 import com.summermessenger.data.Result
-import com.summermessenger.data.db.FireStoreDb
 import com.summermessenger.data.model.User
 import com.summermessenger.util.await
 
-abstract class UsersDao(val db:FireStoreDb) {
+class UsersDao(val db:FireStoreDb) {
     val context = SummerMessenger.context
-    abstract fun getUsers() : List<User>
+    fun getUsers() : List<User>{
+        TODO()
+    }
     private suspend fun getUser(userId:Int) : User? {
         val userDoc = db.users.document("$userId").get().await()
         if(userDoc.exists()){
@@ -32,5 +32,7 @@ abstract class UsersDao(val db:FireStoreDb) {
         else
             return Result.Error(IllegalAccessException("Неправильний пароль!"))
     }
-    abstract fun deleteUser(userId: Int)
+    fun deleteUser(userId: Int){
+        TODO()
+    }
 }

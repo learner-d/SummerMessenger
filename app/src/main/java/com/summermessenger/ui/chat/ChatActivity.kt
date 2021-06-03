@@ -1,7 +1,6 @@
 package com.summermessenger.ui.chat
 
 import android.content.Context
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.inputmethod.InputMethodManager
@@ -9,16 +8,13 @@ import android.widget.EditText
 import android.widget.ImageButton
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.summermessenger.ui.login.LoginActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.Timestamp
 import com.summermessenger.R
 //import com.summermessenger.data.LoginDataSource.Companion.MockUsers
-import com.summermessenger.data.MainRepository
+import com.summermessenger.data.repository.MainRepository
 import com.summermessenger.data.model.Chat
 import com.summermessenger.data.model.Message
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -53,7 +49,7 @@ class ChatActivity : AppCompatActivity() {
         _sendBtn.setOnClickListener { v ->
             hideKeyboard()
 
-            val sender = MainRepository.loginRepository.user!!
+            val sender = MainRepository.usersRepository.loggedInUser!!
             val msgText = _multiText.text.toString()
             val currentTime = Calendar.getInstance().time
             val newMessage = Message(sender, msgText, Timestamp(currentTime))
@@ -84,7 +80,7 @@ class ChatActivity : AppCompatActivity() {
     }
 
     private suspend fun loadData(){
-        mChat = MainRepository.chatsDataSource.loadChat("1")
+        mChat = MainRepository.chatsRepository.getChat(1)
         mMessages.addAll(mChat.messages)
         mMessagesAdapter.notifyDataSetChanged()
     }

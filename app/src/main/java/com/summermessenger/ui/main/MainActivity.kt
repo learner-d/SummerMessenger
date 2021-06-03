@@ -5,9 +5,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
 import android.widget.Toast
-import androidx.appcompat.widget.Toolbar
 import com.google.firebase.auth.FirebaseAuth
 import com.mikepenz.materialdrawer.AccountHeader
 import com.mikepenz.materialdrawer.AccountHeaderBuilder
@@ -17,7 +15,7 @@ import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem
 import com.summermessenger.R
-import com.summermessenger.data.MainRepository
+import com.summermessenger.data.repository.MainRepository
 import com.summermessenger.databinding.ActivityMainBinding
 import com.summermessenger.ui.chat.ChatActivity
 import com.summermessenger.ui.login.LoginActivity
@@ -53,7 +51,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initFunction() {
-        if (mAuth.currentUser == null && !MainRepository.loginRepository.isLoggedIn)
+        if (mAuth.currentUser == null && !MainRepository.usersRepository.isLoggedIn)
             goToLogin()
         setSupportActionBar(mBinding.mainToolbar)
         createHeader()
@@ -109,7 +107,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun createHeader() {
-        var loggedInUser = MainRepository.loginRepository.user
+        var loggedInUser = MainRepository.usersRepository.loggedInUser
         mHeader = AccountHeaderBuilder()
                 .withActivity(this)
                 .withHeaderBackground(R.drawable.header)

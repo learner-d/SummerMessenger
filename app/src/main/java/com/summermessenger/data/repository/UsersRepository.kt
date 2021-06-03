@@ -1,5 +1,7 @@
-package com.summermessenger.data
+package com.summermessenger.data.repository
 
+import com.summermessenger.data.Result
+import com.summermessenger.data.db.UsersDao
 import com.summermessenger.data.model.User
 
 /**
@@ -7,29 +9,36 @@ import com.summermessenger.data.model.User
  * maintains an in-memory cache of login status and user credentials information.
  */
 
-class LoginRepository(val dataSource: UsersDataSource) {
+class UsersRepository private constructor (private val usersDao: UsersDao) {
+    companion object{
+        private var _instance:UsersRepository? = null
+        fun getInstance(usersDao: UsersDao) = _instance ?: synchronized(this){
+            _instance ?: UsersRepository(usersDao)
+        }
+    }
 
     // in-memory cache of the loggedInUser object
-    var user: User? = null
+    var loggedInUser: User? = null
         private set
 
     val isLoggedIn: Boolean
-        get() = user != null
+        get() = loggedInUser != null
 
     init {
         // If user credentials will be cached in local storage, it is recommended it be encrypted
         // @see https://developer.android.com/training/articles/keystore
-        user = null
+        loggedInUser = null
     }
 
     fun logout() {
-        user = null
-        dataSource.logout()
+        loggedInUser = null
+        //dataSource.logout()
+        // TODO: revoke authentication
     }
 
     suspend fun login(username: String, password: String): Result<User> {
         // handle login
-        val result = dataSource.login(username, password)
+        val result = usersDao.getUser(username, password)
 
         if (result is Result.Success) {
             setLoggedInUser(result.data)
@@ -39,7 +48,7 @@ class LoginRepository(val dataSource: UsersDataSource) {
     }
 
     private fun setLoggedInUser(loggedInUser: User) {
-        this.user = loggedInUser
+        this.loggedInUser = loggedInUser
         // If user credentials will be cached in local storage, it is recommended it be encrypted
         // @see https://developer.android.com/training/articles/keystore
     }
