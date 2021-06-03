@@ -1,11 +1,10 @@
 <resources>
-    <string name="app_name">Summer Messenger</string>
-    <string name="title_activity_login">LoginActivity</string>
+    <string name="app_name" translatable="false">Summer Messenger</string>
+    <string name="title_activity_login" translatable="false">LoginActivity</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
-    <string name="action_sign_in">Sign in or register</string>
     <string name="action_sign_in_short">Sign in</string>
-    <string name="welcome">"Welcome !"</string>
+    <string name="welcome">Welcome</string>
     <string name="invalid_username">Not a valid username</string>
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
@@ -14,5 +13,6 @@
     <string name="message_hint">Написать сообщение...</string>
     <string name="nicknames">Дима Гергель</string>
     <string name="online_status">В сети</string>
-    <string name="title_activity_tel_login">TelLoginActivity</string>
+    <string name="title_activity_tel_login" translatable="false">TelLoginActivity</string>
+    <string name="err_username_invalid">Користувача не знайдено!</string>
 </resources>

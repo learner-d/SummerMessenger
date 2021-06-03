@@ -4,7 +4,7 @@ import com.summermessenger.data.db.FireStoreDb
 
 class MainRepository {
     companion object{
-        val fireStoreDb = FireStoreDb()
+        val fireStoreDb = FireStoreDb.instance
         val loginDataSource = UsersDataSource(fireStoreDb)
         val loginRepository = LoginRepository(loginDataSource)
         
