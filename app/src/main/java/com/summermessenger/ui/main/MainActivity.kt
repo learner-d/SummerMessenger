@@ -7,6 +7,8 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.whenStarted
 import com.google.firebase.auth.FirebaseAuth
 import com.mikepenz.materialdrawer.AccountHeader
 import com.mikepenz.materialdrawer.AccountHeaderBuilder
@@ -16,20 +18,29 @@ import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem
 import com.summermessenger.R
-import com.summermessenger.data.repository.MainRepository
+import com.summermessenger.data.Globals
 import com.summermessenger.databinding.ActivityMainBinding
 import com.summermessenger.ui.chat.ChatActivity
 import com.summermessenger.ui.login.LoginActivity
+import kotlinx.coroutines.launch
 
 const val LOGIN_REQUEST_CODE = 501
 class MainActivity : AppCompatActivity() {
-
     private lateinit var mAuth: FirebaseAuth
     private lateinit var mBinding: ActivityMainBinding
     private lateinit var mDrawer: Drawer
     private lateinit var mHeader: AccountHeader
     private lateinit var mViewModel: MainViewModel
 
+    init {
+        lifecycleScope.launch {
+            whenStarted {
+                mViewModel.loginDefaultAsync()
+                if (Globals.loginManager.isLoggedIn)
+                    goToLogin()
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,18 +57,16 @@ class MainActivity : AppCompatActivity() {
 
         mViewModel = ViewModelProvider(this, MainViewModelFactory())
                         .get(MainViewModel::class.java)
+
+        initFunction()
     }
 
     override fun onStart(){
         super.onStart()
         //initFields()
-        initFunction()
     }
 
     private fun initFunction() {
-        mViewModel.loginDefault()
-        if (!MainRepository.usersRepository.isLoggedIn)
-            goToLogin()
         setSupportActionBar(mBinding.mainToolbar)
         createHeader()
         createDrawer()
@@ -109,9 +118,9 @@ class MainActivity : AppCompatActivity() {
 
                 ).withOnDrawerItemClickListener(object : Drawer.OnDrawerItemClickListener{
                     override fun onItemClick(view: View?, position: Int, drawerItem: IDrawerItem<*>): Boolean {
-                        when(position){
-                            105 -> {
-
+                        when(drawerItem.identifier){
+                            105L -> {
+                                logout()
                             }
                             else -> {
                                 Toast.makeText(applicationContext,position.toString(), Toast.LENGTH_SHORT).show()
@@ -125,7 +134,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun createHeader() {
-        val loggedInUser = MainRepository.usersRepository.loggedInUser
+        val loggedInUser = Globals.loginManager.loggedInUser
         mHeader = AccountHeaderBuilder()
                 .withActivity(this)
                 .withHeaderBackground(R.drawable.header)

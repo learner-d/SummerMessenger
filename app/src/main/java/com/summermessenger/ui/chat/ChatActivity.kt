@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.Timestamp
 import com.summermessenger.R
+import com.summermessenger.data.Globals
 //import com.summermessenger.data.LoginDataSource.Companion.MockUsers
 import com.summermessenger.data.repository.MainRepository
 import com.summermessenger.data.model.Chat
@@ -49,7 +50,7 @@ class ChatActivity : AppCompatActivity() {
         _sendBtn.setOnClickListener { v ->
             hideKeyboard()
 
-            val sender = MainRepository.usersRepository.loggedInUser!!
+            val sender = Globals.loginManager.loggedInUser!!
             val msgText = _multiText.text.toString()
             val currentTime = Calendar.getInstance().time
             val newMessage = Message(sender, msgText, Timestamp(currentTime))
@@ -69,20 +70,20 @@ class ChatActivity : AppCompatActivity() {
         super.onBackPressed()
         hideKeyboard()
         finish()
-        //Завантажуємо дані з Firebase
-        lifecycleScope.launchWhenStarted {
-            loadData()
-        }
     }
 
     override fun onStart() {
         super.onStart()
+        //Завантажуємо дані з Firebase
+        loadData()
     }
 
-    private suspend fun loadData(){
-        mChat = MainRepository.chatsRepository.getChat(1)
-        mMessages.addAll(mChat.messages)
-        mMessagesAdapter.notifyDataSetChanged()
+    private fun loadData(){
+        lifecycleScope.launchWhenStarted {
+            mChat = MainRepository.chatsRepository.getChat(1)
+            mMessages.addAll(mChat.messages)
+            mMessagesAdapter.notifyDataSetChanged()
+        }
     }
 
     private fun hideKeyboard(){

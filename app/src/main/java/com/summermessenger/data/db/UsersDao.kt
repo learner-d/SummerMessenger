@@ -1,18 +1,21 @@
 package com.summermessenger.data.db
 
+import android.content.ContentValues.TAG
+import android.util.Log
 import com.google.firebase.auth.FirebaseUser
 import com.summermessenger.R
 import com.summermessenger.SummerMessenger
 import com.summermessenger.data.FirebaseData
 import com.summermessenger.data.Result
 import com.summermessenger.data.model.User
-import com.summermessenger.util.await
+import kotlinx.coroutines.tasks.await
 
-class UsersDao(val db:FireStoreDb) {
+class UsersDao(private val db:FireStoreDb) {
     val context = SummerMessenger.context
     fun getUsers() : List<User>{
         TODO()
     }
+
     private suspend fun getUser(userId:String) : User? {
         val userDoc = db.users.document(userId).get().await()
         if(userDoc.exists()){
@@ -44,5 +47,25 @@ class UsersDao(val db:FireStoreDb) {
 
     fun deleteUser(userId: Int){
         TODO()
+    }
+
+    //New Code
+    fun listenToFirestoreDb() {
+        db.users.addSnapshotListener {
+            snapshot, e ->
+            //Перевірка на наявність помилок
+            if (e != null) {
+                Log.w(TAG, "Listen failed")
+                return@addSnapshotListener
+            }
+            //Помилки відсутні
+            if (snapshot != null){
+                //Снапшот отримано
+                val documents = snapshot.documents
+                documents.forEach{
+
+                }
+            }
+        }
     }
 }

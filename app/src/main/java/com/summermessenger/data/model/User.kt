@@ -1,8 +1,6 @@
 package com.summermessenger.data.model
 
-import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.model.Document
 
 data class User(
     var username: String,
@@ -17,8 +15,7 @@ data class User(
             val username = udUsername as String
 
             val udPassword = userDoc["password"]
-            if (udPassword == null) throw IllegalStateException("userDoc has no password!")
-            val password = udPassword as String
+            val password = udPassword as String? ?: ""
 
             val displayName = userDoc["displayName"] as String? ?: ""
             val phoneNumber = userDoc["phoneNumber"] as String? ?: ""

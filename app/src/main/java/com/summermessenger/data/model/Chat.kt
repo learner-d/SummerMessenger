@@ -3,10 +3,7 @@ package com.summermessenger.data.model
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
-import com.summermessenger.util.await
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.tasks.await
 
 data class Chat(val participants:ArrayList<User>,
                 val messages: ArrayList<Message>){

@@ -14,6 +14,7 @@ import com.summermessenger.data.Result
 
 import com.summermessenger.R
 import com.summermessenger.data.FirebaseData
+import com.summermessenger.data.Globals
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 
@@ -63,7 +64,10 @@ class LoginViewModel(private val usersRepository: UsersRepository) : ViewModel()
         val credential = PhoneAuthProvider.getCredential(_verificationId, smsCode);
         FirebaseData.Auth.signInWithCredential(credential).addOnCompleteListener {
             if(it.isSuccessful){
-                _telLoginResult.postValue(LoginResult(success = LoggedInUserView(displayName = "")))
+                viewModelScope.launch {
+                    Globals.loginManager.updateCurrentUser()
+                    _telLoginResult.postValue(LoginResult(success = LoggedInUserView(displayName = "")))
+                }
             }
         }
     }
@@ -71,7 +75,7 @@ class LoginViewModel(private val usersRepository: UsersRepository) : ViewModel()
     fun login(username: String, password: String) {
         // can be launched in a separate asynchronous job
         viewModelScope.launch {
-            val result = usersRepository.login(username, password)
+            val result = Globals.loginManager.login(username, password)
             if (result is Result.Success) {
                 _loginResult.postValue(LoginResult(success = LoggedInUserView(displayName = result.data.displayName)))
             } else {

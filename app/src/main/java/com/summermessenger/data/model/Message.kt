@@ -3,7 +3,7 @@ package com.summermessenger.data.model
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
-import com.summermessenger.util.await
+import kotlinx.coroutines.tasks.await
 import java.util.*
 
 data class Message(val sender: User, val text: String, val timeStamp: Timestamp) {
