@@ -102,6 +102,7 @@ class UsersRepository private constructor (private val usersFbDao: UsersFbDao) {
     suspend fun getUser(userId: String): User? {
         return usersFbDao.getUser(userId)
     }
+    @Deprecated("Should not be used for now")
     suspend fun getUser(username:String, password:String) : Result<User> {
         return usersFbDao.getUser(username, password)
     }

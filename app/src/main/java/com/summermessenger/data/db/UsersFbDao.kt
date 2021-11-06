@@ -15,7 +15,7 @@ class UsersFbDao(private val appCtx: Context, private val db:FireStoreDb) {
 
     suspend fun createUser(userId: String, displayName: String = "", phoneNumber: String = ""): User? {
         try {
-            val user = User("", displayName, phoneNumber)
+            val user = User(userId, "", displayName, phoneNumber)
             db.users.document(userId).set(user).await()
             return getUser(userId)
         } catch (e: Exception) {
@@ -26,11 +26,12 @@ class UsersFbDao(private val appCtx: Context, private val db:FireStoreDb) {
     suspend fun getUser(userId:String) : User? {
         val userDoc = db.users.document(userId).get().await()
         if(userDoc.exists()) {
-            return User.load(userDoc)
+            return User.load(userId, userDoc)
         }
         return null
     }
 
+    @Deprecated("Should not be used")
     suspend fun getUser(username:String, password:String) : Result<User> {
         val userQuery = db.users.whereEqualTo("username", username).get().await()
 
@@ -38,7 +39,7 @@ class UsersFbDao(private val appCtx: Context, private val db:FireStoreDb) {
             // TODO: remove access to app context
             return Result.Error(IllegalAccessException(appCtx.getString(R.string.err_username_invalid)))
 
-        val user = User.load(userQuery.first())
+        val user = User.load("", userQuery.first())
         return Result.Success(user)
     }
 

@@ -108,6 +108,7 @@ class MainDrawer(private val mMainActivity: AppCompatActivity,
         val currentUser = MainRepository.usersRepository.loggedInUser
             ?: return
         mHeader.activeProfile = ProfileDrawerItem()
+            .withTag(currentUser.userId)
             .withName(currentUser.displayName)
             .withEmail(currentUser.phoneNumber)
     }
