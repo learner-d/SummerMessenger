@@ -26,7 +26,7 @@ class UsersFbDao(private val appCtx: Context, private val db:FireStoreDb) {
     suspend fun getUser(userId:String) : User? {
         val userDoc = db.users.document(userId).get().await()
         if(userDoc.exists()) {
-            return User.load(userId, userDoc)
+            return User.load(userDoc)
         }
         return null
     }
@@ -39,7 +39,7 @@ class UsersFbDao(private val appCtx: Context, private val db:FireStoreDb) {
             // TODO: remove access to app context
             return Result.Error(IllegalAccessException(appCtx.getString(R.string.err_username_invalid)))
 
-        val user = User.load("", userQuery.first())
+        val user = User.load(userQuery.first())
         return Result.Success(user)
     }
 

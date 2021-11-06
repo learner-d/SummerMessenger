@@ -1,18 +1,16 @@
 package com.summermessenger.ui.login
 
 import android.app.Activity
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import androidx.annotation.StringRes
-import androidx.appcompat.app.AppCompatActivity
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
-import com.google.firebase.auth.PhoneAuthProvider
-
+import androidx.annotation.StringRes
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.summermessenger.R
 import com.summermessenger.databinding.ActivityTelLoginBinding
 import com.summermessenger.util.ext.afterTextChanged
@@ -62,8 +60,8 @@ class TelLoginActivity : AppCompatActivity() {
             if (loginResult.error != null) {
                 showLoginFailed(loginResult.error)
             }
-            if (loginResult.success != null) {
-                updateUiWithUser(loginResult.success)
+            if (loginResult.user != null) {
+                updateUiWithUser(loginResult)
                 setResult(Activity.RESULT_OK)
 
                 //Complete and destroy login activity once successful
@@ -100,9 +98,9 @@ class TelLoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun updateUiWithUser(model: LoggedInUserView) {
+    private fun updateUiWithUser(model: LoginResult) {
         val welcome = getString(R.string.welcome)
-        val displayName = model.displayName
+        val displayName = model.user?.displayName
         // TODO : initiate successful logged in experience
         Toast.makeText(
             applicationContext,

@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.summermessenger.data.repository.MainRepository
 import com.summermessenger.data.repository.UsersRepository
 import com.summermessenger.ui.login.ELoginState
+import com.summermessenger.ui.login.LoginResult
 import kotlinx.coroutines.launch
 
 class MainViewModel(private val usersRepository: UsersRepository) : ViewModel() {
@@ -20,6 +21,8 @@ class MainViewModel(private val usersRepository: UsersRepository) : ViewModel() 
                 _loginState.postValue(ELoginState.LoggedOut)
         }
     }
+    private val _loginResult = MutableLiveData<LoginResult>()
+    val loginResult: LiveData<LoginResult> = _loginResult
     fun logout(){
         MainRepository.usersRepository.logout()
         _loginState.postValue(ELoginState.LoggedOut)

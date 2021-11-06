@@ -48,9 +48,10 @@ class LoginActivity : AppCompatActivity() {
         loading.visibility = View.GONE
         if (loginResult.error != null) {
             showLoginFailed(loginResult.error)
+            return@Observer
         }
-        if (loginResult.success != null) {
-            updateUiWithUser(loginResult.success)
+        if (loginResult.user != null) {
+            updateUiWithUser(loginResult)
             setResult(Activity.RESULT_OK)
             //Complete and destroy login activity once successful
             finish()
@@ -77,9 +78,11 @@ class LoginActivity : AppCompatActivity() {
         mViewModel.login(username.text.toString(), password.text.toString())
     }
 
-    private fun updateUiWithUser(model: LoggedInUserView) {
+    private fun updateUiWithUser(model: LoginResult) {
+        if (model.loginState != ELoginState.LoggedIn)
+            return
         val welcome = "Welcome, "
-        val displayName = model.displayName
+        val displayName = model.user?.displayName
         // TODO : initiate successful logged in experience
         Toast.makeText(
                 applicationContext,

@@ -12,6 +12,7 @@ import com.google.firebase.auth.PhoneAuthProvider
 import com.summermessenger.R
 import com.summermessenger.data.FirebaseData
 import com.summermessenger.data.Result
+import com.summermessenger.data.model.User
 import com.summermessenger.data.repository.MainRepository
 import com.summermessenger.data.repository.UsersRepository
 import kotlinx.coroutines.launch
@@ -42,13 +43,15 @@ class LoginViewModel(private val usersRepository: UsersRepository) : ViewModel()
                     override fun onVerificationCompleted(credential: PhoneAuthCredential) {
                         FirebaseData.Auth.signInWithCredential(credential).addOnCompleteListener{
                             if(it.isSuccessful){
-                                _telLoginResult.postValue(LoginResult(success = LoggedInUserView(displayName = "")))
+//                                MainRepository.usersRepository.getUser()
+                                _telLoginResult.postValue(
+                                    LoginResult(ELoginState.LoggedIn, User("","","","")))
                             }
                         }
                     }
 
                     override fun onVerificationFailed(p0: FirebaseException) {
-                        _telLoginResult.postValue(LoginResult(error = R.string.verify_failed))
+                        _telLoginResult.postValue(LoginResult(ELoginState.None, error = R.string.verify_failed))
                     }
 
                     override fun onCodeSent(verificationId: String, token: PhoneAuthProvider.ForceResendingToken) {
@@ -65,7 +68,7 @@ class LoginViewModel(private val usersRepository: UsersRepository) : ViewModel()
             if(it.isSuccessful){
                 viewModelScope.launch {
                     MainRepository.usersRepository.updateCurrentUser()
-                    _telLoginResult.postValue(LoginResult(success = LoggedInUserView(displayName = "")))
+                    _telLoginResult.postValue(LoginResult(ELoginState.LoggedIn, User("","","","")))
                 }
             }
         }
@@ -76,9 +79,9 @@ class LoginViewModel(private val usersRepository: UsersRepository) : ViewModel()
         viewModelScope.launch {
             val result = MainRepository.usersRepository.login(username, password)
             if (result is Result.Success) {
-                _loginResult.postValue(LoginResult(success = LoggedInUserView(displayName = result.data.displayName)))
+                _loginResult.postValue(LoginResult(ELoginState.LoggedIn, result.data))
             } else {
-                _loginResult.postValue(LoginResult(error = R.string.login_failed))
+                _loginResult.postValue(LoginResult(ELoginState.None, error = R.string.login_failed))
             }
         }
     }
