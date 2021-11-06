@@ -8,6 +8,8 @@ import com.summermessenger.data.FirebaseData
 import com.summermessenger.data.Result
 import com.summermessenger.data.db.UsersFbDao
 import com.summermessenger.data.model.User
+import com.summermessenger.ui.login.ELoginState
+import com.summermessenger.ui.login.LoginResult
 import kotlinx.coroutines.tasks.await
 
 /**
@@ -80,17 +82,19 @@ class UsersRepository private constructor (private val usersFbDao: UsersFbDao) {
         }
     }
 
-    fun logout() {
+    fun logout() : LoginResult {
+        val loggedOutUser = loggedInUser
         loggedInUser = null
         FirebaseData.Auth.signOut()
+        return LoginResult(ELoginState.LoggedOut, loggedOutUser)
     }
 
-    suspend fun updateCurrentUser() : Boolean {
+    suspend fun updateCurrentUser() : LoginResult {
         if (FirebaseData.Auth.currentUser?.uid != null) {
             loggedInUser = getUser(FirebaseData.Auth.currentUser!!.uid)
-            return true
+            return LoginResult(ELoginState.LoggedIn, loggedInUser)
         }
-        return false
+        return LoginResult(ELoginState.LoggedOut)
     }
 
     private fun setLoggedInUser(loggedInUser: User) {

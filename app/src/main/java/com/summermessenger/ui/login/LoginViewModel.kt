@@ -67,8 +67,8 @@ class LoginViewModel(private val usersRepository: UsersRepository) : ViewModel()
         FirebaseData.Auth.signInWithCredential(credential).addOnCompleteListener {
             if(it.isSuccessful){
                 viewModelScope.launch {
-                    MainRepository.usersRepository.updateCurrentUser()
-                    _telLoginResult.postValue(LoginResult(ELoginState.LoggedIn, User("","","","")))
+                    val loginResult = MainRepository.usersRepository.updateCurrentUser()
+                    _telLoginResult.postValue(loginResult)
                 }
             }
         }

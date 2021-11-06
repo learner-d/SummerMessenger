@@ -11,6 +11,7 @@ import com.summermessenger.databinding.ActivityMainBinding
 import com.summermessenger.ui.chat.ChatActivity
 import com.summermessenger.ui.login.ELoginState
 import com.summermessenger.ui.login.LoginActivity
+import com.summermessenger.ui.login.LoginResult
 
 class MainActivity : AppCompatActivity() {
     private lateinit var mAuth: FirebaseAuth
@@ -24,8 +25,8 @@ class MainActivity : AppCompatActivity() {
 //        }
     }
 
-    private val mLoginStateObserver = Observer<ELoginState> {
-        when(it) {
+    private val mLoginStateObserver = Observer<LoginResult> {
+        when(it.loginState) {
             ELoginState.LoggedIn -> {
 //                goToChat()
             }
@@ -67,7 +68,7 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(mBinding.mainToolbar)
         mDrawer.initialize(mBinding.mainToolbar)
 
-        mViewModel.loginState.observe(this, mLoginStateObserver)
+        mViewModel.loginResult.observe(this, mLoginStateObserver)
         mViewModel.loginDefault()
     }
 

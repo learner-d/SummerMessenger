@@ -14,21 +14,22 @@ import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem
 import com.summermessenger.R
-import com.summermessenger.data.repository.MainRepository
+import com.summermessenger.data.model.User
 import com.summermessenger.ui.login.ELoginState
+import com.summermessenger.ui.login.LoginResult
 
 class MainDrawer(private val mMainActivity: AppCompatActivity,
                  private val mMainViewModel: MainViewModel) {
     private lateinit var mHeader: AccountHeader
     private lateinit var mDrawer: Drawer
 
-    private val mLoginStateObserver = Observer<ELoginState> {
-        when(it) {
+    private val mLoginStateObserver = Observer<LoginResult> {
+        when(it.loginState) {
             ELoginState.LoggedIn -> {
-                onUserLoggedIn()
+                onUserLoggedIn(it.user)
             }
             ELoginState.LoggedOut -> {
-                onUserLoggedOut()
+                onUserLoggedOut(it.user)
             }
             else -> { }
         }
@@ -37,7 +38,7 @@ class MainDrawer(private val mMainActivity: AppCompatActivity,
     fun initialize(toolbar: Toolbar) {
         createHeader()
         createDrawer(toolbar)
-        mMainViewModel.loginState.observe(mMainActivity, mLoginStateObserver)
+        mMainViewModel.loginResult.observe(mMainActivity, mLoginStateObserver)
     }
     private fun createHeader() {
         mHeader = AccountHeaderBuilder()
@@ -104,15 +105,16 @@ class MainDrawer(private val mMainActivity: AppCompatActivity,
             })
             .build()
     }
-    private fun onUserLoggedIn() {
-        val currentUser = MainRepository.usersRepository.loggedInUser
-            ?: return
+    private fun onUserLoggedIn(user: User?) {
+        user ?: return
+        // Додати користувача
         mHeader.activeProfile = ProfileDrawerItem()
-            .withTag(currentUser.userId)
-            .withName(currentUser.displayName)
-            .withEmail(currentUser.phoneNumber)
+            .withTag(user.userId)
+            .withName(user.displayName)
+            .withEmail(user.phoneNumber)
     }
-    private fun onUserLoggedOut() {
+    private fun onUserLoggedOut(user: User?) {
+        // Вилучити користувача
         mHeader.activeProfile = null
     }
 }
