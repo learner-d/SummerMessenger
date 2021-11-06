@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:icon="@drawable/ic_chat"
+        android:id="@+id/chat_nav"
+        android:title="Чаты"/>
+
+    <item android:icon="@drawable/ic_home"
+        android:id="@+id/home_nav"
+        android:title="Главная" />
+
+    <item android:icon="@drawable/ic_baseline_settings_24"
+        android:id="@+id/settings_nav"
+        android:title="Настройки"/>
+</menu>
