@@ -47,9 +47,10 @@
                     android:layout_height="35dp"
                     android:layout_marginRight="25dp"
                     android:background="@drawable/cloud"
-                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="SpeakableTextPresentCheck" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -64,7 +65,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <fragment class="com.summermessenger.ChatsListFragment"
+    <androidx.fragment.app.FragmentContainerView class="com.summermessenger.ChatsListFragment"
         android:id="@+id/frgm_chats_list"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -72,6 +73,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/main_toolbar"
+        tools:layout="@layout/chats_list_fragment"
         />
 
 

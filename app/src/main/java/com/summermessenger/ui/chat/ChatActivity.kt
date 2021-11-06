@@ -1,30 +1,29 @@
 package com.summermessenger.ui.chat
 
+//import com.summermessenger.data.LoginDataSource.Companion.MockUsers
 import android.content.Context
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageButton
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.Timestamp
 import com.summermessenger.R
-import com.summermessenger.data.Globals
-//import com.summermessenger.data.LoginDataSource.Companion.MockUsers
-import com.summermessenger.data.repository.MainRepository
 import com.summermessenger.data.model.Chat
 import com.summermessenger.data.model.Message
+import com.summermessenger.data.repository.MainRepository
 import java.util.*
 import kotlin.collections.ArrayList
 
 class ChatActivity : AppCompatActivity() {
-    lateinit var _inputMethodManager: InputMethodManager
+    private lateinit var _inputMethodManager: InputMethodManager
 
-    lateinit var mChat: Chat;
-    val mMessages = ArrayList<Message>();
-    lateinit var mMessagesAdapter: MessagesAdapter;
+    private lateinit var mChat: Chat
+    private val mMessages = ArrayList<Message>()
+    private lateinit var mMessagesAdapter: MessagesAdapter
 
     private lateinit var _messagesRV: RecyclerView
     private lateinit var _multiText: EditText
@@ -50,7 +49,7 @@ class ChatActivity : AppCompatActivity() {
         _sendBtn.setOnClickListener { v ->
             hideKeyboard()
 
-            val sender = Globals.loginManager.loggedInUser!!
+            val sender = MainRepository.usersRepository.loggedInUser!!
             val msgText = _multiText.text.toString()
             val currentTime = Calendar.getInstance().time
             val newMessage = Message(sender, msgText, Timestamp(currentTime))
@@ -87,6 +86,6 @@ class ChatActivity : AppCompatActivity() {
     }
 
     private fun hideKeyboard(){
-        _inputMethodManager.hideSoftInputFromWindow(_multiText.getWindowToken(), 0)
+        _inputMethodManager.hideSoftInputFromWindow(_multiText.windowToken, 0)
     }
 }

@@ -67,7 +67,19 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:text="Sign in by phone number"
         android:textColor="@color/md_blue_700"
-        android:onClick="goToTelLoginPage_OnClick"/>
+        android:layout_marginVertical="16dp"/>
+
+    <TextView
+        android:id="@+id/lbl_register"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/lbl_login_tel"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:text="Зареєструватися"
+        android:textColor="@color/md_blue_700"
+        android:layout_marginVertical="16dp"
+        />
 
     <ProgressBar
         android:id="@+id/loading"

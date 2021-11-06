@@ -1,12 +1,10 @@
 package com.summermessenger.data.db
 
 import com.google.firebase.firestore.DocumentSnapshot
-import com.summermessenger.data.db.FireStoreDb
 import com.summermessenger.data.model.Chat
-import com.summermessenger.data.model.User
 import kotlinx.coroutines.tasks.await
 
-class ChatsDao(val db:FireStoreDb) {
+class ChatsDao(private val db:FireStoreDb) {
     fun getChats() : List<Chat>{
         TODO()
     }

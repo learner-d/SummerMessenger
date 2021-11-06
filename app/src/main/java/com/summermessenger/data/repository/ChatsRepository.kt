@@ -1,7 +1,6 @@
 package com.summermessenger.data.repository
 
 import com.summermessenger.data.db.ChatsDao
-import com.summermessenger.data.db.UsersDao
 
 class ChatsRepository private constructor(private val chatsDao: ChatsDao){
     companion object{

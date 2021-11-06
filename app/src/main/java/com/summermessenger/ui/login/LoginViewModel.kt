@@ -1,20 +1,19 @@
 package com.summermessenger.ui.login
 
 import android.app.Activity
+import android.util.Patterns
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import android.util.Patterns
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthProvider
-import com.summermessenger.data.repository.UsersRepository
-import com.summermessenger.data.Result
-
 import com.summermessenger.R
 import com.summermessenger.data.FirebaseData
-import com.summermessenger.data.Globals
+import com.summermessenger.data.Result
+import com.summermessenger.data.repository.MainRepository
+import com.summermessenger.data.repository.UsersRepository
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 
@@ -61,11 +60,11 @@ class LoginViewModel(private val usersRepository: UsersRepository) : ViewModel()
     }
 
     fun verifyMsgCode(smsCode:String) {
-        val credential = PhoneAuthProvider.getCredential(_verificationId, smsCode);
+        val credential = PhoneAuthProvider.getCredential(_verificationId, smsCode)
         FirebaseData.Auth.signInWithCredential(credential).addOnCompleteListener {
             if(it.isSuccessful){
                 viewModelScope.launch {
-                    Globals.loginManager.updateCurrentUser()
+                    MainRepository.usersRepository.updateCurrentUser()
                     _telLoginResult.postValue(LoginResult(success = LoggedInUserView(displayName = "")))
                 }
             }
@@ -75,7 +74,7 @@ class LoginViewModel(private val usersRepository: UsersRepository) : ViewModel()
     fun login(username: String, password: String) {
         // can be launched in a separate asynchronous job
         viewModelScope.launch {
-            val result = Globals.loginManager.login(username, password)
+            val result = MainRepository.usersRepository.login(username, password)
             if (result is Result.Success) {
                 _loginResult.postValue(LoginResult(success = LoggedInUserView(displayName = result.data.displayName)))
             } else {
@@ -86,20 +85,20 @@ class LoginViewModel(private val usersRepository: UsersRepository) : ViewModel()
 
     fun loginDataChanged(username: String, password: String) {
         if (!isUserNameValid(username)) {
-            _loginFormState.value = LoginFormState(usernameError = R.string.invalid_username)
+            _loginFormState.postValue(LoginFormState(usernameError = R.string.invalid_username))
         } else if (!isPasswordValid(password)) {
-            _loginFormState.value = LoginFormState(passwordError = R.string.invalid_password)
+            _loginFormState.postValue(LoginFormState(passwordError = R.string.invalid_password))
         } else {
-            _loginFormState.value = LoginFormState(isDataValid = true)
+            _loginFormState.postValue(LoginFormState(isDataValid = true))
         }
     }
 
     fun telLoginDataChanged(phoneNum: String, msgCode:String){
-        var phoneNumValid = isPhoneNumValid(phoneNum)
-        var msgCodeValid = isMsgCodeValid(msgCode)
+        val phoneNumValid = isPhoneNumValid(phoneNum)
+        val msgCodeValid = isMsgCodeValid(msgCode)
 
-        _telLoginFormState.value = TelLoginFormState(isPhoneNumValid = phoneNumValid,
-                                                        isMsgCodeValid = msgCodeValid)
+        _telLoginFormState.postValue(TelLoginFormState(isPhoneNumValid = phoneNumValid,
+                                                        isMsgCodeValid = msgCodeValid))
     }
 
     // A placeholder phone number validation check

@@ -2,34 +2,34 @@ package com.summermessenger.ui.login
 
 import android.app.Activity
 import android.content.Intent
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import androidx.annotation.StringRes
-import androidx.appcompat.app.AppCompatActivity
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
-
-import com.summermessenger.R
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.StringRes
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import com.summermessenger.databinding.ActivityLoginBinding
+import com.summermessenger.ui.register.RegisterActivity
 import com.summermessenger.util.ext.afterTextChanged
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 
 class LoginActivity : AppCompatActivity() {
 //    private val getData = GetData();
 
-    private lateinit var loginViewModel: LoginViewModel
+    private lateinit var mBinding: ActivityLoginBinding
+    private lateinit var mViewModel: LoginViewModel
 
-    lateinit var username:EditText
-    lateinit var password:EditText
-    lateinit var login:Button
-    lateinit var loading:ProgressBar
+    private lateinit var username:EditText
+    private lateinit var password:EditText
+    private lateinit var login:Button
+    private lateinit var loading:ProgressBar
 
-    val loginFormStateObserver = Observer<LoginFormState> {
+    private val mLoginFormStateObserver = Observer<LoginFormState> {
         val loginState = it ?: return@Observer
 
         // disable login button unless both username / password is valid
@@ -43,7 +43,7 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    val loginResultObserver = Observer<LoginResult> {
+    private val mLoginResultObserver = Observer<LoginResult> {
         val loginResult = it ?: return@Observer
         loading.visibility = View.GONE
         if (loginResult.error != null) {
@@ -57,54 +57,24 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-//        lifecycle.addObserver();
-        setContentView(R.layout.activity_login)
-
-        username = findViewById(R.id.username)
-        password = findViewById(R.id.password)
-        login = findViewById(R.id.login)
-        loading = findViewById(R.id.loading)
-
-        loginViewModel = ViewModelProvider(this, LoginViewModelFactory())
-                .get(LoginViewModel::class.java)
-
-        username.afterTextChanged {
-            loginViewModel.loginDataChanged(
-                    username.text.toString(),
-                    password.text.toString()
-            )
+    private val mTelActivityResultHandler = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        if (it.resultCode != RESULT_OK) {
+            return@registerForActivityResult
         }
-
-        password.apply {
-            afterTextChanged {
-                loginViewModel.loginDataChanged(
-                        username.text.toString(),
-                        password.text.toString()
-                )
-            }
-
-            setOnEditorActionListener { _, actionId, _ ->
-                when (actionId) {
-                    EditorInfo.IME_ACTION_DONE ->
-                        startLogin()
-                }
-                false
-            }
-
-            login.setOnClickListener {
-                loading.visibility = View.VISIBLE
-                startLogin()
-            }
-        }
+        setResult(RESULT_OK)
+        finish()
     }
 
-    fun startLogin() {
-        GlobalScope.launch {
-            loginViewModel.login(username.text.toString(), password.text.toString())
+    private val mRegisterActivityResultHandler = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        if (it.resultCode != RESULT_OK ) {
+            return@registerForActivityResult
         }
+        setResult(RESULT_OK)
+        finish()
+    }
+
+    private fun startLogin() {
+        mViewModel.login(username.text.toString(), password.text.toString())
     }
 
     private fun updateUiWithUser(model: LoggedInUserView) {
@@ -122,37 +92,78 @@ class LoginActivity : AppCompatActivity() {
         Toast.makeText(applicationContext, errorString, Toast.LENGTH_SHORT).show()
     }
 
-    val TEL_LOGIN_CODE = 502
-    fun goToTelLoginPage_OnClick(view: View) {
-        goToTelLoginPage()
+    private fun goToTelLoginPage() {
+        val i = Intent(this, TelLoginActivity::class.java)
+        mTelActivityResultHandler.launch(i)
     }
 
-    fun goToTelLoginPage(){
-        val i = Intent(this, TelLoginActivity::class.java)
-        startActivityForResult(i, TEL_LOGIN_CODE)
+    private fun goToRegisterPage() {
+        val i = Intent(this, RegisterActivity::class.java)
+        mRegisterActivityResultHandler.launch(i)
+    }
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        mBinding = ActivityLoginBinding.inflate(layoutInflater)
+//        lifecycle.addObserver();
+        setContentView(mBinding.root)
+
+        username = mBinding.username
+        password = mBinding.password
+        login = mBinding.login
+        loading = mBinding.loading
+
+        mViewModel = ViewModelProvider(this, LoginViewModelFactory())
+            .get(LoginViewModel::class.java)
+
+        username.afterTextChanged {
+            mViewModel.loginDataChanged(
+                username.text.toString(),
+                password.text.toString()
+            )
+        }
+
+        password.apply {
+            afterTextChanged {
+                mViewModel.loginDataChanged(
+                    username.text.toString(),
+                    password.text.toString()
+                )
+            }
+            setOnEditorActionListener { _, actionId, _ ->
+                when (actionId) {
+                    EditorInfo.IME_ACTION_DONE ->
+                        startLogin()
+                }
+                false
+            }
+        }
+
+        login.setOnClickListener {
+            loading.visibility = View.VISIBLE
+            startLogin()
+        }
+
+        // Натискання "Увійти за ном. телефону"
+        mBinding.lblLoginTel.setOnClickListener {
+            goToTelLoginPage()
+        }
+        // Натискання "Зареєструватися"
+        mBinding.lblRegister.setOnClickListener {
+            goToRegisterPage()
+        }
     }
 
     override fun onStart() {
         super.onStart()
-        loginViewModel.loginFormState.observe(this, loginFormStateObserver)
-        loginViewModel.loginResult.observe(this, loginResultObserver)
+        mViewModel.loginFormState.observe(this, mLoginFormStateObserver)
+        mViewModel.loginResult.observe(this, mLoginResultObserver)
     }
 
     override fun onStop() {
         super.onStop()
-        loginViewModel.loginFormState.removeObserver(loginFormStateObserver)
-        loginViewModel.loginResult.removeObserver(loginResultObserver)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == TEL_LOGIN_CODE) {
-            if (resultCode != RESULT_OK) {
-                goToTelLoginPage()
-                return
-            }
-            setResult(RESULT_OK)
-            finish()
-        }
+        mViewModel.loginFormState.removeObserver(mLoginFormStateObserver)
+        mViewModel.loginResult.removeObserver(mLoginResultObserver)
     }
 }

@@ -1,13 +1,12 @@
 package com.summermessenger
 
-import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
 
 class SummerMessenger : Application() {
     companion object {
-        @SuppressLint("StaticFieldLeak")
-        private lateinit var _context: Context;
+//        @SuppressLint("StaticFieldLeak")
+        private lateinit var _context: Context
         val context: Context
             get() = _context
     }
