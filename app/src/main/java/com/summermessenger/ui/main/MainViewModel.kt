@@ -12,8 +12,8 @@ import kotlinx.coroutines.launch
 class MainViewModel(private val usersRepository: UsersRepository) : ViewModel() {
     private val _loginResult = MutableLiveData<LoginResult>()
     val loginResult: LiveData<LoginResult> = _loginResult
-    fun loginDefault(){
-        viewModelScope.launch{
+    fun loginDefault() {
+        viewModelScope.launch {
             val loginResult = usersRepository.loginByFirebaseCurrentUser()
             _loginResult.postValue(loginResult)
         }
@@ -21,7 +21,7 @@ class MainViewModel(private val usersRepository: UsersRepository) : ViewModel() 
     fun requestNewLogin() {
         _loginResult.postValue(LoginResult(ELoginState.NeedToLogin))
     }
-    fun logout(){
+    fun logout() {
         val loginResult = usersRepository.logout()
         _loginResult.postValue(loginResult)
     }

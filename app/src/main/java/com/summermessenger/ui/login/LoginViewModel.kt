@@ -35,7 +35,7 @@ class LoginViewModel(private val usersRepository: UsersRepository) : ViewModel()
 
     private var _verificationId = ""
 
-    fun requestMsgCode(phoneNum: String, activity: Activity){
+    fun requestMsgCode(phoneNum: String, activity: Activity) {
         // can be launched in a separate asynchronous job
         PhoneAuthProvider.getInstance().verifyPhoneNumber(phoneNum,
                 60, TimeUnit.SECONDS,
@@ -106,7 +106,7 @@ class LoginViewModel(private val usersRepository: UsersRepository) : ViewModel()
         }
     }
 
-    fun telLoginDataChanged(phoneNum: String, msgCode:String){
+    fun telLoginDataChanged(phoneNum: String, msgCode:String) {
         val phoneNumValid = isPhoneNumValid(phoneNum)
         val msgCodeValid = isMsgCodeValid(msgCode)
 
@@ -115,13 +115,12 @@ class LoginViewModel(private val usersRepository: UsersRepository) : ViewModel()
     }
 
     // A placeholder phone number validation check
-    private fun isPhoneNumValid(phoneNum: String):Boolean{
+    private fun isPhoneNumValid(phoneNum: String):Boolean {
         return Patterns.PHONE.matcher(phoneNum).matches()
     }
 
-
     // A placeholder message code validation check
-    private fun isMsgCodeValid(msgCode:String):Boolean{
+    private fun isMsgCodeValid(msgCode:String):Boolean {
         return true
     }
 
