@@ -1,18 +1,19 @@
 package com.summermessenger
 
 import android.app.Application
-import android.content.Context
 
 class SummerMessenger : Application() {
     companion object {
-//        @SuppressLint("StaticFieldLeak")
-        private lateinit var _context: Context
-        val context: Context
-            get() = _context
+        lateinit var instance: SummerMessenger
+            private set
     }
 
     override fun onCreate() {
         super.onCreate()
-        _context = applicationContext
+        instance = this
+    }
+
+    fun getResourceString(resId: Int): String {
+        return applicationContext.getString(resId)
     }
 }

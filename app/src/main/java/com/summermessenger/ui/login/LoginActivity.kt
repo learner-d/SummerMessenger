@@ -29,6 +29,24 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var login:Button
     private lateinit var loading:ProgressBar
 
+    private val mTelActivityResultHandler = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        if (it.resultCode != RESULT_OK) {
+            return@registerForActivityResult
+        }
+        // Закрити активіті входу
+        setResult(RESULT_OK)
+        finish()
+    }
+
+    private val mRegisterActivityResultHandler = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        if (it.resultCode != RESULT_OK ) {
+            return@registerForActivityResult
+        }
+        // Закрити активіті входу
+        setResult(RESULT_OK)
+        finish()
+    }
+
     private val mLoginFormStateObserver = Observer<LoginFormState> {
         val loginState = it ?: return@Observer
 
@@ -56,22 +74,6 @@ class LoginActivity : AppCompatActivity() {
             //Complete and destroy login activity once successful
             finish()
         }
-    }
-
-    private val mTelActivityResultHandler = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-        if (it.resultCode != RESULT_OK) {
-            return@registerForActivityResult
-        }
-        setResult(RESULT_OK)
-        finish()
-    }
-
-    private val mRegisterActivityResultHandler = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-        if (it.resultCode != RESULT_OK ) {
-            return@registerForActivityResult
-        }
-        setResult(RESULT_OK)
-        finish()
     }
 
     private fun startLogin() {

@@ -1,14 +1,14 @@
 package com.summermessenger.data.db
 
 import android.content.ContentValues.TAG
-import android.content.Context
 import android.util.Log
 import com.summermessenger.R
+import com.summermessenger.SummerMessenger
 import com.summermessenger.data.Result
 import com.summermessenger.data.model.User
 import kotlinx.coroutines.tasks.await
 
-class UsersFbDao(private val appCtx: Context, private val db:FireStoreDb) {
+class UsersFbDao(private val db:FireStoreDb) {
     fun getUsers() : List<User>{
         TODO()
     }
@@ -36,8 +36,7 @@ class UsersFbDao(private val appCtx: Context, private val db:FireStoreDb) {
         val userQuery = db.users.whereEqualTo("username", username).get().await()
 
         if(userQuery.isEmpty)
-            // TODO: remove access to app context
-            return Result.Error(IllegalAccessException(appCtx.getString(R.string.err_username_invalid)))
+            return Result.Error(IllegalAccessException(SummerMessenger.instance.getResourceString(R.string.err_username_invalid)))
 
         val user = User.load(userQuery.first())
         return Result.Success(user)

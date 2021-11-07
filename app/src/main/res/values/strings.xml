@@ -8,11 +8,13 @@
     <string name="invalid_username">Not a valid username</string>
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
+    <string name="invalid_username_or_password">Invalid username or password</string>
     <string name="verify_failed">"Verification failed"</string>
-    <string name="start_messaging_hint">Тут пока ничего нет, напишите что-то для начала беседы!</string>
-    <string name="message_hint">Написать сообщение...</string>
-    <string name="nicknames">Дима Гергель</string>
-    <string name="online_status">В сети</string>
+    <string name="start_messaging_hint">Message placeholder</string>
+    <string name="message_hint">Write message…</string>
+    <string name="nicknames">Dmytro Herhel</string>
+    <string name="online_status">Online</string>
     <string name="title_activity_tel_login" translatable="false">TelLoginActivity</string>
-    <string name="err_username_invalid">Користувача не знайдено!</string>
+    <string name="err_username_invalid">User is not found!</string>
+    <string name="err_network_error">Couldn\'t connect to the server</string>
 </resources>

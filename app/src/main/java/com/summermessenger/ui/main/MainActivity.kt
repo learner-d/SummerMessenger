@@ -1,5 +1,6 @@
 package com.summermessenger.ui.main
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.result.contract.ActivityResultContracts
@@ -20,17 +21,25 @@ class MainActivity : AppCompatActivity() {
     private lateinit var mDrawer: MainDrawer
 
     private val mLoginActivityResultHandler = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-//        if (it.resultCode != Activity.RESULT_OK) {
-//            goToLogin()
-//        }
+        if (it.resultCode == Activity.RESULT_OK) {
+            // запросити дані про нового користувача
+            mViewModel.requestCurrentLoginResult()
+        }
+        else
+            mViewModel.requestCurrentLoginResult()
     }
 
-    private val mLoginStateObserver = Observer<LoginResult> {
+    private val mLoginResultObserver = Observer<LoginResult> {
         when(it.loginState) {
             ELoginState.LoggedIn -> {
-//                goToChat()
+                // goToChat()
+                // TODO: оновити дані, пов'язані із користувачем
             }
             ELoginState.LoggedOut -> {
+                // запросити дані про нового користувача
+                mViewModel.requestCurrentLoginResult()
+            }
+            ELoginState.NeedToLogin -> {
                 goToLogin()
             }
             else -> {}
@@ -68,12 +77,8 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(mBinding.mainToolbar)
         mDrawer.initialize(mBinding.mainToolbar)
 
-        mViewModel.loginResult.observe(this, mLoginStateObserver)
+        mViewModel.loginResult.observe(this, mLoginResultObserver)
+        // Автентифікація користувача за промовчанням
         mViewModel.loginDefault()
-    }
-
-    override fun onStart(){
-        super.onStart()
-        //initFields()
     }
 }

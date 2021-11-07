@@ -2,7 +2,6 @@ package com.summermessenger.data.db
 
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.summermessenger.SummerMessenger
 
 class FireStoreDb private constructor() {
     companion object{
@@ -19,7 +18,7 @@ class FireStoreDb private constructor() {
     val chats = db.collection("chats")
     val messages = db.collection("messages")
 
-    val usersDao = UsersFbDao(SummerMessenger.context, this)
+    val usersDao = UsersFbDao(this)
     val chatsDao = ChatsDao(this)
     val messagesDao = MessagesDao(this)
 }

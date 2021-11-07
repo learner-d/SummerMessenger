@@ -19,18 +19,20 @@ import kotlinx.coroutines.tasks.await
 
 class UsersRepository private constructor (private val usersFbDao: UsersFbDao) {
     companion object {
-        private var _instance:UsersRepository? = null
-        fun getInstance(usersFbDao: UsersFbDao) = _instance ?: synchronized(this){
-            _instance ?: UsersRepository(usersFbDao)
+        private var oInstance:UsersRepository? = null
+        fun getInstance(usersFbDao: UsersFbDao) = oInstance ?: synchronized(this){
+            oInstance ?: UsersRepository(usersFbDao)
         }
     }
 
     // in-memory cache of the loggedInUser object
     var loggedInUser: User? = null
         private set
-
     val isLoggedIn: Boolean
         get() = loggedInUser != null
+
+    private val _loggedInUsers = mutableListOf<User>()
+    val loggedInUsers: List<User> = _loggedInUsers
 
     init {
         // If user credentials will be cached in local storage, it is recommended it be encrypted
@@ -74,6 +76,9 @@ class UsersRepository private constructor (private val usersFbDao: UsersFbDao) {
             // отримати дані користувача із бази даних
             val userData = getUser(fbUser.uid)
                 ?: return Result.Error(Exception("Користувача не знайдено в базі даних"))
+            // додати користувача до списку залогінених
+            addLoggedInUser(userData)
+            loggedInUser = userData
             return Result.Success(userData)
         }
         catch (e: Exception) {
@@ -82,19 +87,42 @@ class UsersRepository private constructor (private val usersFbDao: UsersFbDao) {
         }
     }
 
-    fun logout() : LoginResult {
-        val loggedOutUser = loggedInUser
-        loggedInUser = null
+    fun logout(userId: String? = null) : LoginResult {
+        val loggingOutUser: User? = if (userId == null)
+            loggedInUser
+        else
+            getLoggedInUser(userId)
+        // Вилучити користувача із списку
+        _loggedInUsers.remove(loggingOutUser)
+        // Замінити поточного користувача
+        loggedInUser = if (loggedInUsers.isNotEmpty())
+            loggedInUsers[0]
+        else null
+        // Вийти із Firebase
+        // TODO: розібратися з авторизацією Firebase
         FirebaseData.Auth.signOut()
-        return LoginResult(ELoginState.LoggedOut, loggedOutUser)
+        return LoginResult(ELoginState.LoggedOut, loggingOutUser)
     }
 
-    suspend fun updateCurrentUser() : LoginResult {
-        if (FirebaseData.Auth.currentUser?.uid != null) {
-            loggedInUser = getUser(FirebaseData.Auth.currentUser!!.uid)
-            return LoginResult(ELoginState.LoggedIn, loggedInUser)
+    private fun addLoggedInUser(user: User) {
+        if (getLoggedInUser(user.userId) != null) {
+            return
+            // TODO Handle situation
         }
-        return LoginResult(ELoginState.LoggedOut)
+        _loggedInUsers.add(user)
+    }
+
+    suspend fun loginByFirebaseCurrentUser() : LoginResult {
+        if (FirebaseData.Auth.currentUser?.uid != null) {
+            val currentUserData = getUser(FirebaseData.Auth.currentUser!!.uid)
+            if (currentUserData != null) {
+                addLoggedInUser(currentUserData)
+                // Встановити поточного користувача
+                loggedInUser = currentUserData
+                return LoginResult(ELoginState.LoggedIn, currentUserData)
+            }
+        }
+        return LoginResult(ELoginState.NeedToLogin)
     }
 
     private fun setLoggedInUser(loggedInUser: User) {
@@ -106,6 +134,11 @@ class UsersRepository private constructor (private val usersFbDao: UsersFbDao) {
     suspend fun getUser(userId: String): User? {
         return usersFbDao.getUser(userId)
     }
+
+    fun getLoggedInUser(userId: String): User? {
+        return _loggedInUsers.find { it.userId == userId }
+    }
+
     @Deprecated("Should not be used for now")
     suspend fun getUser(username:String, password:String) : Result<User> {
         return usersFbDao.getUser(username, password)

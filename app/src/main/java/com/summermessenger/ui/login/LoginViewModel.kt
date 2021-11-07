@@ -7,6 +7,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.FirebaseException
+import com.google.firebase.FirebaseNetworkException
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthProvider
 import com.summermessenger.R
@@ -67,7 +69,7 @@ class LoginViewModel(private val usersRepository: UsersRepository) : ViewModel()
         FirebaseData.Auth.signInWithCredential(credential).addOnCompleteListener {
             if(it.isSuccessful){
                 viewModelScope.launch {
-                    val loginResult = MainRepository.usersRepository.updateCurrentUser()
+                    val loginResult = MainRepository.usersRepository.loginByFirebaseCurrentUser()
                     _telLoginResult.postValue(loginResult)
                 }
             }
@@ -81,7 +83,15 @@ class LoginViewModel(private val usersRepository: UsersRepository) : ViewModel()
             if (result is Result.Success) {
                 _loginResult.postValue(LoginResult(ELoginState.LoggedIn, result.data))
             } else {
-                _loginResult.postValue(LoginResult(ELoginState.None, error = R.string.login_failed))
+                result as Result.Error
+                val errorStr = if (result.exception is FirebaseAuthInvalidCredentialsException)
+                    R.string.invalid_username_or_password
+                else if (result.exception is FirebaseNetworkException)
+                    R.string.err_network_error
+                else
+                    R.string.login_failed
+
+                _loginResult.postValue(LoginResult(ELoginState.None, error = errorStr))
             }
         }
     }
