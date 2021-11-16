@@ -4,12 +4,14 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/dmtrg/AndroidStudioProjects/SummerMessenger/app/src/main/res/layout/activity_chat.xml" value="0.152" />
-        <entry key="..\:/Users/dmtrg/AndroidStudioProjects/SummerMessenger/app/src/main/res/layout/activity_login.xml" value="0.25" />
-        <entry key="..\:/Users/dmtrg/AndroidStudioProjects/SummerMessenger/app/src/main/res/layout/activity_main.xml" value="0.264" />
+        <entry key="..\:/Users/dmtrg/AndroidStudioProjects/SummerMessenger/app/src/main/res/layout/activity_login.xml" value="0.176" />
+        <entry key="..\:/Users/dmtrg/AndroidStudioProjects/SummerMessenger/app/src/main/res/layout/activity_main.xml" value="0.13333333333333333" />
         <entry key="..\:/Users/dmtrg/AndroidStudioProjects/SummerMessenger/app/src/main/res/layout/activity_register.xml" value="0.176" />
         <entry key="..\:/Users/dmtrg/AndroidStudioProjects/SummerMessenger/app/src/main/res/layout/activity_tel_login.xml" value="0.25" />
         <entry key="..\:/Users/dmtrg/AndroidStudioProjects/SummerMessenger/app/src/main/res/layout/chat_message_fragment.xml" value="0.25" />
         <entry key="..\:/Users/dmtrg/AndroidStudioProjects/SummerMessenger/app/src/main/res/layout/chats_list_fragment.xml" value="0.25" />
+        <entry key="..\:/Users/dmtrg/AndroidStudioProjects/SummerMessenger/app/src/main/res/layout/fragment_login_email.xml" value="0.25" />
+        <entry key="..\:/Users/dmtrg/AndroidStudioProjects/SummerMessenger/app/src/main/res/layout/fragment_register_email.xml" value="0.25" />
         <entry key="..\:/Users/dmtrg/AndroidStudioProjects/SummerMessenger/app/src/main/res/layout/fragment_register_form_userdata.xml" value="0.2" />
         <entry key="..\:/Users/dmtrg/AndroidStudioProjects/SummerMessenger/app/src/main/res/layout/fragment_register_userdatainput.xml" value="0.25" />
         <entry key="..\:/Users/dmtrg/AndroidStudioProjects/SummerMessenger/app/src/main/res/layout/register_fragment.xml" value="0.17135416666666667" />

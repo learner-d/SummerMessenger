@@ -20,8 +20,6 @@ private const val ARG_PARAM2 = "param2"
 
 /**
  * A simple [Fragment] subclass.
- * Use the [RegisterUserDataFormFragment.newInstance] factory method to
- * create an instance of this fragment.
  */
 // TODO: додати перевірку полів
 class RegisterUserDataFormFragment : Fragment() {
@@ -43,7 +41,6 @@ class RegisterUserDataFormFragment : Fragment() {
         mBinding = FragmentRegisterFormUserdataBinding.inflate(inflater)
         mViewModel = ViewModelProvider(activity as AppCompatActivity, RegisterViewModelFactory())
             .get(RegisterViewModel::class.java)
-        mViewModel.registerResult.observe(viewLifecycleOwner, mRegisterResultObserver)
 
         // Натискання кнопки "Далі"
         mBinding.btnNext.setOnClickListener {
@@ -56,5 +53,15 @@ class RegisterUserDataFormFragment : Fragment() {
                 mBinding.etNickname.text.toString())
         }
         return mBinding.root
+    }
+
+    override fun onStart() {
+        super.onStart()
+        mViewModel.registerResult.observe(viewLifecycleOwner, mRegisterResultObserver)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        mViewModel.registerResult.removeObserver(mRegisterResultObserver)
     }
 }
