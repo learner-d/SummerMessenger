@@ -3,19 +3,14 @@ package com.summermessenger.data.model
 import com.google.firebase.firestore.DocumentSnapshot
 
 data class User(
-    val userId: String,
-    var username: String,
-    var displayName: String,
-    var phoneNumber:String) {
+    val userId: String = "",
+    var username: String = "",
+    var displayName: String = "",
+    var phoneNumber:String = "") {
 
     companion object{
-        fun load(userDoc:DocumentSnapshot): User{
-            val udUsername = userDoc["username"] ?: throw IllegalStateException("userDoc has no username!")
-            val username = udUsername as String
-
-            val displayName = userDoc["displayName"] as String? ?: ""
-            val phoneNumber = userDoc["phoneNumber"] as String? ?: ""
-            return User(userDoc.id, username,displayName,phoneNumber)
+        fun load(userDoc:DocumentSnapshot): User? {
+            return userDoc.toObject(User::class.java)
         }
     }
 }

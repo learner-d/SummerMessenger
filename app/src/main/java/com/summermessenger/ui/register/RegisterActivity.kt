@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.summermessenger.databinding.ActivityRegisterBinding
+import com.summermessenger.util.ext.replaceFragment
 
 class RegisterActivity : AppCompatActivity() {
     private lateinit var mViewModel: RegisterViewModel
@@ -22,7 +23,13 @@ class RegisterActivity : AppCompatActivity() {
             Log.e(TAG, registerResult.error.toString())
             return@Observer
         }
-        if (registerResult.success != null) {
+        if (registerResult.registerState == ERegisterState.CreatedAccount) { // користувача створено
+            if (registerResult.success != null) {
+                showUserDataFormFragment() // показати форму заповнення даних
+                return@Observer
+            }
+        }
+        else if (registerResult.registerState == ERegisterState.Registered) { // реєстрацію завершено
             // успішна реєстрація
             Toast.makeText(this, "Успішно зареєстровано !", Toast.LENGTH_LONG).show()
             setResult(RESULT_OK)
@@ -30,6 +37,7 @@ class RegisterActivity : AppCompatActivity() {
             finish()
             return@Observer
         }
+        // TODO: видалити користувача з Firebase, якщо не вдалося завершити реєстрацію
         // Непередбачуваний результат
         throw IllegalStateException()
     }
@@ -39,21 +47,15 @@ class RegisterActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mBinding = ActivityRegisterBinding.inflate(layoutInflater)
-        setContentView(mBinding.root)
+        // показати фрагмент "емаіл і пароль"
+        showRegisterEmailFragment()
 
-        val etEmailAddress = mBinding.editTextTextEmailAddress
-        val etPassword = mBinding.editTextTextPassword
+        setContentView(mBinding.root)
 
         mViewModel = ViewModelProvider(this, RegisterViewModelFactory())
             .get(RegisterViewModel::class.java)
-
-        // натискання "Реєстрація"
-        mBinding.btnDoRegister.setOnClickListener {
-            // TODO: показати індикатор завантаження
-            Toast.makeText(this, "Реєструємось, зачекайте, будь ласка ...", Toast.LENGTH_LONG).show()
-            mViewModel.registerUser(etEmailAddress.text.toString(), etPassword.text.toString())
-        }
     }
+
     override fun onStart() {
         super.onStart()
         mViewModel.registerResult.observe(this, mRegisterResultObserver)
@@ -62,5 +64,13 @@ class RegisterActivity : AppCompatActivity() {
     override fun onStop() {
         super.onStop()
         mViewModel.registerResult.removeObserver(mRegisterResultObserver)
+    }
+
+    private fun showRegisterEmailFragment() {
+        replaceFragment(mBinding.fvRegisterMainContent, RegisterEmailFragment(), false)
+    }
+
+    private fun showUserDataFormFragment() {
+        replaceFragment(mBinding.fvRegisterMainContent, RegisterUserDataFormFragment(), false)
     }
 }

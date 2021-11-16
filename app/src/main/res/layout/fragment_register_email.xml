@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.register.RegisterEmailFragment">
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Реєстрація"
+            android:textSize="20dp"
+
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="100dp"
+            />
+
+        <TextView
+            android:id="@+id/lbl_inpEmail"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+
+            android:text="Ел. пошта"
+            android:textSize="14dp"
+            android:layout_marginTop="20dp"
+            app:layout_constraintStart_toStartOf="@id/editText_TextEmailAddress"
+            app:layout_constraintTop_toBottomOf="@id/textView"
+            />
+
+        <EditText
+            android:id="@+id/editText_TextEmailAddress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:ems="10"
+            android:inputType="textEmailAddress"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/lbl_inpEmail"
+            />
+
+        <TextView
+            android:id = "@+id/lbl_inpPwd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:text = "Пароль"
+            android:textSize="14dp"
+            android:layout_marginTop="20dp"
+
+            app:layout_constraintStart_toStartOf="@id/editText_TextPassword"
+            app:layout_constraintTop_toBottomOf="@id/editText_TextEmailAddress"/>
+
+        <EditText
+            android:id="@+id/editText_TextPassword"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:ems="10"
+            android:inputType="textPassword"
+            app:layout_constraintTop_toBottomOf="@id/lbl_inpPwd"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            />
+        <Button
+            android:id="@+id/btn_doRegister"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/editText_TextPassword"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="10dp"
+            android:text="Зареєструватися"
+            />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

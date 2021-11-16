@@ -66,7 +66,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.fragment.app.FragmentContainerView class="com.summermessenger.ChatsListFragment"
+    <androidx.fragment.app.FragmentContainerView
+        android:name="com.summermessenger.ChatsListFragment"
         android:id="@+id/frgm_chats_list"
         android:layout_width="match_parent"
         android:layout_height="0dp"

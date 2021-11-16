@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.summermessenger.data.Result
 import com.summermessenger.data.repository.MainRepository
 import kotlinx.coroutines.launch
@@ -13,16 +14,44 @@ class RegisterViewModel : ViewModel() {
     val registerResult: LiveData<RegisterResult> = _registerResult
     private val _registerFormState = MutableLiveData<RegisterFormState>()
     val registerFormState: LiveData<RegisterFormState> = _registerFormState
-    fun registerUser(username:String, password:String) {
+
+
+    // Створює користувача
+    fun createUser(username:String, password:String) {
         // TODO: Перевірити дані
         // Асинхронна робота
         viewModelScope.launch {
-            val registerResult = MainRepository.usersRepository.createUser(username, password)
-            if (registerResult is Result.Success){
-                _registerResult.postValue(RegisterResult(success = registerResult.data))
+            val createUserResult = MainRepository.usersRepository.createUser(username, password)
+            val registerResult: RegisterResult
+            // Користувача створено
+            if (createUserResult is Result.Success){
+                registerResult = RegisterResult(success = createUserResult.data,
+                    registerState = ERegisterState.CreatedAccount)
             }
-            else{
-                _registerResult.postValue(RegisterResult(error = registerResult.toString()))
+            else if (createUserResult is Result.Error) {
+                if (createUserResult.exception is FirebaseAuthUserCollisionException)
+                    registerResult = RegisterResult(error = "Користувача з цією електронною адресою вже зареєстровано")
+                else
+                    registerResult = RegisterResult(error = createUserResult.toString())
+            }
+            else {
+                registerResult = RegisterResult()
+            }
+
+
+            _registerResult.postValue(registerResult)
+        }
+    }
+
+    // Заповнює реєстраційні дані користувача, та завершує реєстрацію
+    fun fillUserData(userId: String, displayName:String, nickname:String = "") {
+        viewModelScope.launch {
+            val registeredUser = MainRepository.usersRepository.fillUserData(userId, displayName, nickname)
+            // Перевірка результату
+            if (registeredUser != null) {
+                _registerResult.postValue(RegisterResult(success = registeredUser, registerState = ERegisterState.Registered))
+            } else {
+                _registerResult.postValue(RegisterResult(error= "registeredUser = null"))
             }
         }
     }

@@ -4,7 +4,6 @@ import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
 import kotlinx.coroutines.tasks.await
-import java.util.*
 
 data class Message(val sender: User, val text: String, val timeStamp: Timestamp) {
     companion object{
@@ -16,7 +15,7 @@ data class Message(val sender: User, val text: String, val timeStamp: Timestamp)
 
             val mdTimestamp = msgDoc["timeStamp"] as Timestamp
 
-            return Message(sender, mdText, mdTimestamp)
+            return Message(sender!!, mdText, mdTimestamp)
         }
     }
 }

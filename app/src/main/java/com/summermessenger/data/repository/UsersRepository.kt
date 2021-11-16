@@ -143,7 +143,12 @@ class UsersRepository private constructor (private val usersFbDao: UsersFbDao) {
     suspend fun getUser(username:String, password:String) : Result<User> {
         return usersFbDao.getUser(username, password)
     }
+
     suspend fun createUser(userId:String, displayName:String = "", phoneNum: String = ""): User? {
         return usersFbDao.createUser(userId, displayName, phoneNum)
+    }
+
+    suspend fun fillUserData(userId: String, displayName: String, nickname: String): User? {
+        return usersFbDao.setUserData(userId, displayName, nickname)
     }
 }

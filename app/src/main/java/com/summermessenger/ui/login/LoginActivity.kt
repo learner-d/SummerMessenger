@@ -43,8 +43,8 @@ class LoginActivity : AppCompatActivity() {
             return@registerForActivityResult
         }
         // Закрити активіті входу
-        setResult(RESULT_OK)
-        finish()
+//        setResult(RESULT_OK)
+//        finish()
     }
 
     private val mLoginFormStateObserver = Observer<LoginFormState> {

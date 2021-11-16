@@ -39,7 +39,7 @@ class UsersFbDao(private val db:FireStoreDb) {
             return Result.Error(IllegalAccessException(SummerMessenger.instance.getResourceString(R.string.err_username_invalid)))
 
         val user = User.load(userQuery.first())
-        return Result.Success(user)
+        return Result.Success(user!!)
     }
 
     fun deleteUser(userId: Int){
@@ -64,5 +64,26 @@ class UsersFbDao(private val db:FireStoreDb) {
                 }
             }
         }
+    }
+
+    // TODO: перевірити на вийняткові ситуації
+    suspend fun setUserData(userId: String, displayName: String = "", nickname: String = ""): User? {
+        val displayNameTrimmed = displayName.trim()
+        val nicknameTrimmed = nickname.trim()
+        if (userId.isEmpty())
+            return null
+        val userDoc = db.users.document(userId).get().await()
+        if (!userDoc.exists())
+            return null
+
+        val user = User.load(userDoc)!!
+        if (displayNameTrimmed.isNotEmpty())
+            user.displayName = displayNameTrimmed
+        if (nicknameTrimmed.isNotEmpty())
+            user.username = nicknameTrimmed
+        if (displayNameTrimmed.isNotEmpty() && nicknameTrimmed.isNotEmpty())
+            db.users.document(userId).set(user).await()
+
+        return user
     }
 }

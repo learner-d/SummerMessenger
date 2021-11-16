@@ -6,9 +6,13 @@
         <entry key="..\:/Users/dmtrg/AndroidStudioProjects/SummerMessenger/app/src/main/res/layout/activity_chat.xml" value="0.152" />
         <entry key="..\:/Users/dmtrg/AndroidStudioProjects/SummerMessenger/app/src/main/res/layout/activity_login.xml" value="0.25" />
         <entry key="..\:/Users/dmtrg/AndroidStudioProjects/SummerMessenger/app/src/main/res/layout/activity_main.xml" value="0.264" />
-        <entry key="..\:/Users/dmtrg/AndroidStudioProjects/SummerMessenger/app/src/main/res/layout/activity_register.xml" value="0.4" />
+        <entry key="..\:/Users/dmtrg/AndroidStudioProjects/SummerMessenger/app/src/main/res/layout/activity_register.xml" value="0.176" />
         <entry key="..\:/Users/dmtrg/AndroidStudioProjects/SummerMessenger/app/src/main/res/layout/activity_tel_login.xml" value="0.25" />
+        <entry key="..\:/Users/dmtrg/AndroidStudioProjects/SummerMessenger/app/src/main/res/layout/chat_message_fragment.xml" value="0.25" />
         <entry key="..\:/Users/dmtrg/AndroidStudioProjects/SummerMessenger/app/src/main/res/layout/chats_list_fragment.xml" value="0.25" />
+        <entry key="..\:/Users/dmtrg/AndroidStudioProjects/SummerMessenger/app/src/main/res/layout/fragment_register_form_userdata.xml" value="0.2" />
+        <entry key="..\:/Users/dmtrg/AndroidStudioProjects/SummerMessenger/app/src/main/res/layout/fragment_register_userdatainput.xml" value="0.25" />
+        <entry key="..\:/Users/dmtrg/AndroidStudioProjects/SummerMessenger/app/src/main/res/layout/register_fragment.xml" value="0.17135416666666667" />
         <entry key="..\:/Users/dmytrogergel/AndroidStudioProjects/SummerMessenger/app/src/main/res/layout/activity_login.xml" value="0.176" />
         <entry key="..\:/Users/dmytrogergel/AndroidStudioProjects/SummerMessenger/app/src/main/res/layout/activity_main.xml" value="0.152" />
         <entry key="..\:/Users/dmytrogergel/AndroidStudioProjects/SummerMessenger/app/src/main/res/layout/activity_register.xml" value="0.5438066465256798" />
@@ -21,5 +25,12 @@
   </component>
   <component name="ProjectType">
     <option name="id" value="Android" />
+  </component>
+  <component name="VisualizationToolProject">
+    <option name="state">
+      <ProjectState>
+        <option name="scale" value="0.264" />
+      </ProjectState>
+    </option>
   </component>
 </project>
