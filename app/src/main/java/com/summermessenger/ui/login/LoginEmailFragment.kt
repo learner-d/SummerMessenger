@@ -1,48 +1,20 @@
 package com.summermessenger.ui.login
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.summermessenger.databinding.FragmentLoginEmailBinding
-import com.summermessenger.ui.register.RegisterActivity
 import com.summermessenger.util.ext.afterTextChanged
 
 class LoginEmailFragment : Fragment() {
     private lateinit var mBinding: FragmentLoginEmailBinding
     private lateinit var mViewModel: LoginViewModel
-
-    private val mTelActivityResultHandler = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-        if (it.resultCode != AppCompatActivity.RESULT_OK) {
-            return@registerForActivityResult
-        }
-
-        if (activity == null)
-            return@registerForActivityResult
-
-        // Закрити активіті входу
-        requireActivity().setResult(AppCompatActivity.RESULT_OK)
-        requireActivity().finish()
-    }
-
-    private val mRegisterActivityResultHandler = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-        if (it.resultCode != AppCompatActivity.RESULT_OK) {
-            return@registerForActivityResult
-        }
-        // Закрити активіті входу
-//        setResult(RESULT_OK)
-//        finish()
-    }
 
     // Отримано результат перевірки форми
     private val mLoginFormStateObserver = Observer<LoginFormState> {
@@ -62,19 +34,6 @@ class LoginEmailFragment : Fragment() {
     private val mLoginResultObserver = Observer<LoginResult> {
         val loginResult = it ?: return@Observer
         mBinding.loading.visibility = View.GONE
-        if (loginResult.error != null) {
-            showLoginFailed(loginResult.error)
-            return@Observer
-        }
-        if (loginResult.user != null) {
-            updateUiWithUser(loginResult)
-            if (activity == null)
-                return@Observer
-
-            requireActivity().setResult(Activity.RESULT_OK)
-            //Complete and destroy login activity once successful
-            requireActivity().finish()
-        }
     }
 
     override fun onCreateView(
@@ -119,12 +78,12 @@ class LoginEmailFragment : Fragment() {
 
         // "Увійти за номером телефону"
         mBinding.lblLoginTel.setOnClickListener {
-            goToTelLoginPage()
+            mViewModel.showLoginFragment(ELoginFragment.TelLoginFragment)
         }
 
         // "Зареєструватися"
         mBinding.lblRegister.setOnClickListener {
-            goToRegisterPage()
+            mViewModel.requestRegistrationActivity()
         }
 
         // Повернути 'View' фрагменту
@@ -140,33 +99,5 @@ class LoginEmailFragment : Fragment() {
     private fun startLogin() {
         mBinding.loading.visibility = View.VISIBLE
         mViewModel.login(mBinding.username.text.toString(), mBinding.password.text.toString())
-    }
-
-
-    private fun goToTelLoginPage() {
-        val i = Intent(activity as AppCompatActivity, TelLoginActivity::class.java)
-        mTelActivityResultHandler.launch(i)
-    }
-
-    private fun goToRegisterPage() {
-        val i = Intent(activity as AppCompatActivity, RegisterActivity::class.java)
-        mRegisterActivityResultHandler.launch(i)
-    }
-
-    private fun updateUiWithUser(model: LoginResult) {
-        if (model.loginState != ELoginState.LoggedIn)
-            return
-        val welcome = "Welcome, "
-        val displayName = model.user?.displayName
-        // TODO : initiate successful logged in experience
-        Toast.makeText(
-            context,
-            "$welcome $displayName",
-            Toast.LENGTH_LONG
-        ).show()
-    }
-
-    private fun showLoginFailed(@StringRes errorString: Int) {
-        Toast.makeText(context, errorString, Toast.LENGTH_SHORT).show()
     }
 }

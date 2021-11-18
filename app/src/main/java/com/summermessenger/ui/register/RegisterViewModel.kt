@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.summermessenger.data.Result
+import com.summermessenger.data.model.User
 import com.summermessenger.data.repository.MainRepository
 import kotlinx.coroutines.launch
 
@@ -25,8 +26,8 @@ class RegisterViewModel : ViewModel() {
             val registerResult: RegisterResult
             // Користувача створено
             if (createUserResult is Result.Success){
-                registerResult = RegisterResult(success = createUserResult.data,
-                    registerState = ERegisterState.CreatedAccount)
+                registerResult = RegisterResult(user = createUserResult.data,
+                    registerState = ERegisterState.NeedDataFilling)
             }
             else if (createUserResult is Result.Error) {
                 if (createUserResult.exception is FirebaseAuthUserCollisionException)
@@ -43,13 +44,19 @@ class RegisterViewModel : ViewModel() {
         }
     }
 
+    fun requestUserDataFilling(user: User) {
+        val registerResult = RegisterResult(registerState = ERegisterState.NeedDataFilling,
+            user = user)
+        _registerResult.value = registerResult
+    }
+
     // Заповнює реєстраційні дані користувача, та завершує реєстрацію
     fun fillUserData(userId: String, displayName:String, nickname:String = "") {
         viewModelScope.launch {
             val registeredUser = MainRepository.usersRepository.fillUserData(userId, displayName, nickname)
             // Перевірка результату
             if (registeredUser != null) {
-                _registerResult.postValue(RegisterResult(success = registeredUser, registerState = ERegisterState.Registered))
+                _registerResult.postValue(RegisterResult(user = registeredUser, registerState = ERegisterState.Registered))
             } else {
                 _registerResult.postValue(RegisterResult(error= "registeredUser = null"))
             }

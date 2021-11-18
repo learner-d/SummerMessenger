@@ -1,6 +1,7 @@
 package com.summermessenger.data.repository
 
 import android.content.ContentValues
+import android.content.ContentValues.TAG
 import android.util.Log
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseUser
@@ -77,8 +78,7 @@ class UsersRepository private constructor (private val usersFbDao: UsersFbDao) {
             val userData = getUser(fbUser.uid)
                 ?: return Result.Error(Exception("Користувача не знайдено в базі даних"))
             // додати користувача до списку залогінених
-            addLoggedInUser(userData)
-            loggedInUser = userData
+            addLoggedInUser(userData, true)
             return Result.Success(userData)
         }
         catch (e: Exception) {
@@ -104,19 +104,23 @@ class UsersRepository private constructor (private val usersFbDao: UsersFbDao) {
         return LoginResult(ELoginState.LoggedOut, loggingOutUser)
     }
 
-    private fun addLoggedInUser(user: User) {
+    fun addLoggedInUser(user: User, setAsCurrent: Boolean) : LoginResult {
+        // Перевірка на колізію серед користувачів
         if (getLoggedInUser(user.userId) != null) {
-            return
+            return LoginResult(loginState = ELoginState.None, errorStr = "Такий користувач уже існує")
             // TODO Handle situation
         }
         _loggedInUsers.add(user)
+        if (setAsCurrent)
+            setLoggedInUser(user)
+        return LoginResult(loginState = ELoginState.LoggedIn, user = user)
     }
 
     suspend fun loginByFirebaseCurrentUser() : LoginResult {
         if (FirebaseData.Auth.currentUser?.uid != null) {
             val currentUserData = getUser(FirebaseData.Auth.currentUser!!.uid)
             if (currentUserData != null) {
-                addLoggedInUser(currentUserData)
+                addLoggedInUser(currentUserData, true)
                 // Встановити поточного користувача
                 loggedInUser = currentUserData
                 return LoginResult(ELoginState.LoggedIn, currentUserData)
@@ -125,8 +129,15 @@ class UsersRepository private constructor (private val usersFbDao: UsersFbDao) {
         return LoginResult(ELoginState.NeedToLogin)
     }
 
-    private fun setLoggedInUser(loggedInUser: User) {
-        this.loggedInUser = loggedInUser
+    private fun setLoggedInUser(user: User) {
+        // Перевірка на колізію серед користувачів
+        if (getLoggedInUser(user.userId) == null) {
+            // TODO Handle situation
+//            return LoginResult(loginState = ELoginState.None, errorStr = "Такий користувач уже існує")
+            Log.e(TAG, "The user isn't logged in")
+            return
+        }
+        this.loggedInUser = user
         // If user credentials will be cached in local storage, it is recommended it be encrypted
         // @see https://developer.android.com/training/articles/keystore
     }

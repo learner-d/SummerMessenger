@@ -1,16 +1,18 @@
 package com.summermessenger.ui.login
 
 import android.app.Activity
+import android.content.ContentValues.TAG
+import android.util.Log
 import android.util.Patterns
+import androidx.annotation.StringRes
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.FirebaseException
 import com.google.firebase.FirebaseNetworkException
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
-import com.google.firebase.auth.PhoneAuthCredential
-import com.google.firebase.auth.PhoneAuthProvider
+import com.google.firebase.FirebaseTooManyRequestsException
+import com.google.firebase.auth.*
 import com.summermessenger.R
 import com.summermessenger.data.FirebaseData
 import com.summermessenger.data.Result
@@ -18,7 +20,10 @@ import com.summermessenger.data.model.User
 import com.summermessenger.data.repository.MainRepository
 import com.summermessenger.data.repository.UsersRepository
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import java.util.concurrent.TimeUnit
+
+enum class ELoginFragment { EmailLoginFragment, TelLoginFragment }
 
 class LoginViewModel(private val usersRepository: UsersRepository) : ViewModel() {
     private val _loginFormState = MutableLiveData<LoginFormState>()
@@ -30,50 +35,78 @@ class LoginViewModel(private val usersRepository: UsersRepository) : ViewModel()
     private val _loginResult = MutableLiveData<LoginResult>()
     val loginResult: LiveData<LoginResult> = _loginResult
 
-    private val _telLoginResult = MutableLiveData<LoginResult>()
-    val telLoginResult: LiveData<LoginResult> = _telLoginResult
+    private val _showingLoginFragment = MutableLiveData<ELoginFragment>()
+    val showingLoginFragment: LiveData<ELoginFragment> = _showingLoginFragment
 
-    private var _verificationId = ""
+    private var _telVerificationId = ""
+    private lateinit var _telToken: PhoneAuthProvider.ForceResendingToken
 
-    fun requestMsgCode(phoneNum: String, activity: Activity) {
-        // can be launched in a separate asynchronous job
-        PhoneAuthProvider.getInstance().verifyPhoneNumber(phoneNum,
-                60, TimeUnit.SECONDS,
-                activity,
-                object : PhoneAuthProvider.OnVerificationStateChangedCallbacks()
-                {
-                    override fun onVerificationCompleted(credential: PhoneAuthCredential) {
-                        FirebaseData.Auth.signInWithCredential(credential).addOnCompleteListener{
-                            if(it.isSuccessful){
-//                                MainRepository.usersRepository.getUser()
-                                _telLoginResult.postValue(
-                                    LoginResult(ELoginState.LoggedIn, User("","","","")))
-                            }
-                        }
-                    }
+    // Кол-беки для оброблення процедури верифікації телефону
+    private val mPhoneVerificationCallbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+        // Верифікацію завершено
+        override fun onVerificationCompleted(credential: PhoneAuthCredential) {
+            // This callback will be invoked in two situations:
+            // 1 - Instant verification. In some cases the phone number can be instantly
+            //     verified without needing to send or enter a verification code.
+            // 2 - Auto-retrieval. On some devices Google Play services can automatically
+            //     detect the incoming verification SMS and perform verification without
+            //     user action
+            loginWithFbCredential(credential)
+        }
+        override fun onVerificationFailed(e: FirebaseException) {
+            // This callback is invoked in an invalid request for verification is made,
+            // for instance if the the phone number format is not valid.
+            Log.w(TAG, "onVerificationFailed", e)
 
-                    override fun onVerificationFailed(p0: FirebaseException) {
-                        _telLoginResult.postValue(LoginResult(ELoginState.None, error = R.string.verify_failed))
-                    }
+            @StringRes
+            val errorStrId = if (e is FirebaseAuthInvalidCredentialsException) {
+                // Invalid request
+                R.string.tel_verify_bad_number
+            } else if (e is FirebaseTooManyRequestsException) {
+                // The SMS quota for the project has been exceeded
+                R.string.tel_verify_too_many_requests
+            }
+            else
+                R.string.tel_verify_fail
 
-                    override fun onCodeSent(verificationId: String, token: PhoneAuthProvider.ForceResendingToken) {
-                        super.onCodeSent(verificationId, token)
-                        _verificationId = verificationId
-                    }
-                }
-        )
+            // Show a message and update the UI
+            _loginResult.postValue(
+                LoginResult(
+                    ELoginState.None,
+                    errorStrId = errorStrId
+                )
+            )
+        }
+        override fun onCodeSent(
+            verificationId: String, token: PhoneAuthProvider.ForceResendingToken) {
+            // The SMS verification code has been sent to the provided phone number, we
+            // now need to ask the user to enter the code and then construct a credential
+            // by combining the code with a verification ID.
+            Log.d(TAG, "onCodeSent:$verificationId")
+
+            // Save verification ID and resending token so we can use them later
+            _telVerificationId = verificationId
+            _telToken = token
+            _loginResult.postValue(LoginResult(loginState = ELoginState.TelCodeSent))
+        }
     }
 
+    fun requestMsgCode(phoneNum: String, activity: Activity) {
+        val phoneNumAuthOptions
+            = PhoneAuthOptions.newBuilder(FirebaseData.Auth)
+                .setPhoneNumber(phoneNum)
+                .setActivity(activity)
+                .setTimeout(120, TimeUnit.SECONDS)
+                .setCallbacks(mPhoneVerificationCallbacks)
+                .build()
+
+        PhoneAuthProvider.verifyPhoneNumber(phoneNumAuthOptions)
+    }
+
+    // Перевірка коду з SMS
     fun verifyMsgCode(smsCode:String) {
-        val credential = PhoneAuthProvider.getCredential(_verificationId, smsCode)
-        FirebaseData.Auth.signInWithCredential(credential).addOnCompleteListener {
-            if(it.isSuccessful){
-                viewModelScope.launch {
-                    val loginResult = MainRepository.usersRepository.loginByFirebaseCurrentUser()
-                    _telLoginResult.postValue(loginResult)
-                }
-            }
-        }
+        val credential = PhoneAuthProvider.getCredential(_telVerificationId, smsCode)
+        loginWithFbCredential(credential)
     }
 
     fun login(username: String, password: String) {
@@ -91,7 +124,36 @@ class LoginViewModel(private val usersRepository: UsersRepository) : ViewModel()
                 else
                     R.string.login_failed
 
-                _loginResult.postValue(LoginResult(ELoginState.None, error = errorStr))
+                _loginResult.postValue(LoginResult(ELoginState.None, errorStrId = errorStr))
+            }
+        }
+    }
+
+    fun loginWithFbCredential(credential: AuthCredential) {
+        viewModelScope.launch {
+            try {
+                val fbAuthResult = FirebaseData.Auth.signInWithCredential(credential).await()
+                // TODO: Check null reference situation
+                val fbUser = fbAuthResult.user!!
+                var user = MainRepository.usersRepository.getUser(fbUser.uid)
+                val loginState: ELoginState
+                if (user != null)
+                    loginState = ELoginState.LoggedIn
+                else {
+                    loginState = ELoginState.NeedToCompleteRegistration
+                    user = User(userId = fbUser.uid)
+                }
+
+                _loginResult.postValue(LoginResult(loginState = loginState, user = user))
+            } catch (e: Exception) {
+                // TODO: вирішити момент
+                Log.e(TAG, e.toString())
+                if (e is FirebaseAuthInvalidCredentialsException){
+                    _loginResult.postValue(LoginResult(loginState = ELoginState.None, errorStr = e.localizedMessage ?: e.toString()))
+                }
+                else {
+                    _loginResult.postValue(LoginResult(loginState = ELoginState.None, errorStr = e.toString()))
+                }
             }
         }
     }
@@ -136,5 +198,21 @@ class LoginViewModel(private val usersRepository: UsersRepository) : ViewModel()
     // A placeholder password validation check
     private fun isPasswordValid(password: String): Boolean {
         return password.length > 5
+    }
+
+    // Додає користувача в репозиторій авторизованих
+    fun addLoggedInUser(user: User, setAsCurrent: Boolean) {
+        val loginResult = MainRepository.usersRepository.addLoggedInUser(user, setAsCurrent)
+        _loginResult.value = loginResult
+    }
+
+    // Показує заданий фрагмент
+    fun showLoginFragment(eLoginFragment: ELoginFragment) {
+        _showingLoginFragment.value = eLoginFragment
+    }
+
+    // Ініціює виклик активиті "реєстрація"
+    fun requestRegistrationActivity() {
+        _loginResult.value = LoginResult(loginState = ELoginState.NeedToRegister)
     }
 }

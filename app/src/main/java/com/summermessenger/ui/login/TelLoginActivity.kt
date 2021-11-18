@@ -53,12 +53,12 @@ class TelLoginActivity : AppCompatActivity() {
             }
         )
 
-        loginViewModel.telLoginResult.observe(this, Observer {
+        loginViewModel.loginResult.observe(this, Observer {
             val loginResult = it ?: return@Observer
 
             loading.visibility = View.GONE
-            if (loginResult.error != null) {
-                showLoginFailed(loginResult.error)
+            if (loginResult.errorStrId != null) {
+                showLoginFailed(loginResult.errorStrId)
             }
             if (loginResult.user != null) {
                 updateUiWithUser(loginResult)

@@ -67,21 +67,23 @@ class UsersFbDao(private val db:FireStoreDb) {
     }
 
     // TODO: перевірити на вийняткові ситуації
+    // Створює користувача якщо такий відсутній
     suspend fun setUserData(userId: String, displayName: String = "", nickname: String = ""): User? {
         val displayNameTrimmed = displayName.trim()
         val nicknameTrimmed = nickname.trim()
         if (userId.isEmpty())
             return null
         val userDoc = db.users.document(userId).get().await()
-        if (!userDoc.exists())
-            return null
+        val user = if (userDoc.exists())
+            User.load(userDoc)!!
+        else
+            User(userId = userId)
 
-        val user = User.load(userDoc)!!
         if (displayNameTrimmed.isNotEmpty())
             user.displayName = displayNameTrimmed
         if (nicknameTrimmed.isNotEmpty())
             user.username = nicknameTrimmed
-        if (displayNameTrimmed.isNotEmpty() && nicknameTrimmed.isNotEmpty())
+        if (displayNameTrimmed.isNotEmpty() || nicknameTrimmed.isNotEmpty())
             db.users.document(userId).set(user).await()
 
         return user

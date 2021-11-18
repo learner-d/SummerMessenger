@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "730801490930",
+    "firebase_url": "https://summer-msg-default-rtdb.firebaseio.com",
     "project_id": "summer-msg",
     "storage_bucket": "summer-msg.appspot.com"
   },
@@ -13,6 +14,22 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "730801490930-fcann35empjh66b3vfllif718pqdnk11.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.summermessenger",
+            "certificate_hash": "bee2e4adc94a2c67803dd94e2c524116df0a7802"
+          }
+        },
+        {
+          "client_id": "730801490930-ft1g16uvhlvuplcm0sgvflrv7mua2742.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.summermessenger",
+            "certificate_hash": "a056a198a01ba75958c9a2f00eb785f27eae1e64"
+          }
+        },
         {
           "client_id": "730801490930-66hb648ac7o91apgmf44c6vv55llh035.apps.googleusercontent.com",
           "client_type": 3

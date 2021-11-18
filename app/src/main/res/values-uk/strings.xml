@@ -8,11 +8,13 @@
     <string name="invalid_username">Невірне ім\'я користувача</string>
     <string name="invalid_password">Довжина паролю має бути >5 символів</string>
     <string name="login_failed">Не вдалось авторизуватися</string>
-    <string name="verify_failed">Верифікацію не пройдено</string>
+    <string name="tel_verify_fail">Верифікацію не пройдено</string>
     <string name="start_messaging_hint">Message placeholder</string>
     <string name="message_hint">Написати повідомлення...</string>
     <string name="nicknames">Дмитро Гергель</string>
     <string name="online_status">У мережі</string>
     <string name="invalid_username_or_password">Невірне ім\'я користувача або пароль</string>
     <string name="err_network_error">Невдале підключення до серверу</string>
+    <string name="tel_verify_bad_number">Невірний формат номеру телефону</string>
+    <string name="tel_verify_too_many_requests">Забагато запитів перевірок</string>
 </resources>

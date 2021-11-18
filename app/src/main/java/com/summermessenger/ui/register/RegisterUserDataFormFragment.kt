@@ -28,8 +28,8 @@ class RegisterUserDataFormFragment : Fragment() {
 
     private var registeringUser: User? = null
     private val mRegisterResultObserver = Observer<RegisterResult> {
-        if (it.error == null && it.registerState == ERegisterState.CreatedAccount)
-            registeringUser = it.success
+        if (it.error == null && it.registerState == ERegisterState.NeedDataFilling)
+            registeringUser = it.user
         else
             registeringUser = null
     }
@@ -58,10 +58,5 @@ class RegisterUserDataFormFragment : Fragment() {
     override fun onStart() {
         super.onStart()
         mViewModel.registerResult.observe(viewLifecycleOwner, mRegisterResultObserver)
-    }
-
-    override fun onStop() {
-        super.onStop()
-        mViewModel.registerResult.removeObserver(mRegisterResultObserver)
     }
 }

@@ -47,11 +47,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun goToLogin(){
-        mLoginActivityResultHandler.launch(Intent(this, LoginActivity::class.java))
+        mLoginActivityResultHandler.launch(Intent(applicationContext, LoginActivity::class.java))
     }
 
     private fun goToChat(){
-        val intent = Intent(this, ChatActivity::class.java)
+        val intent = Intent(applicationContext, ChatActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_TASK_ON_HOME
         startActivity(intent)
     }
